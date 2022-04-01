@@ -4,7 +4,7 @@ console.log("finished loaded");
 const canvas = document.getElementById("canvas");
 canvas.width = 1444;
 canvas.height = 1444;
-
+ // 
 const context = canvas.getContext("2d");
 var mouseDown;
 var prevPoint;
