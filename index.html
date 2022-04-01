@@ -7,9 +7,19 @@
   <title>replit</title>
   <link href="style.css" rel="stylesheet" type="text/css" />
 </head>
-
 <body>
-  Hello world
+
+    <canvas 
+        onmousemove = "testMouse(event)"
+        onmousedown = "setMouseState(ACTIVE)"
+        onmouseup = "setMouseState(INACTIVE)"
+        id="canvas">
+        
+    </canvas>
+    <p id="display">
+        
+    </p>
+  <script src="Point.js"></script>
   <script src="script.js"></script>
 </body>
 

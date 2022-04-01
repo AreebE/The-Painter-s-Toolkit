@@ -1,3 +1,24 @@
 .wow {
-  width: 100px;
+/*   width: 100px; */
+/*     height: 200px */
+}
+body 
+{
+    height: 100%;
+    width: 100%;
+}
+#canvas 
+{
+    width: 500px;
+    height: 500px;
+    margin: 20px;
+    background: rgb(55, 255, 159);
+}
+
+#display 
+{
+/*     width: 500px; */
+    height: 50px;
+    margin: 20px;
+    border: solid 3px black;
 }
