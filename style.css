@@ -1,16 +1,14 @@
-.wow {
-/*   width: 100px; */
-/*     height: 200px */
-}
+
 body 
 {
     height: 100%;
     width: 100%;
 }
+
 #canvas 
 {
-    width: 500px;
-    height: 500px;
+    width: 100%;
+    scale: 1.0;
     margin: 20px;
     background: rgb(55, 255, 159);
 }

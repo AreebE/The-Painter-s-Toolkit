@@ -3,24 +3,30 @@
 
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width">
-  <title>replit</title>
+  <meta name="viewport" content="width=device-width height=device-height" initial-scale="1.0">
+    <title>replit</title>
   <link href="style.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
-
+<!--       <script src="script.js"></script> -->
+    <script src="util.js"></script>
     <canvas 
-        onmousemove = "testMouse(event)"
-        onmousedown = "setMouseState(ACTIVE)"
-        onmouseup = "setMouseState(INACTIVE)"
+        onmousemove = "testMouse(event, false)"
+        onmousedown = "setMouseState(0)"
+        onmouseup = "setMouseState(1)"
+        ontouchmove = "testMouse(event, true)"
+        ontouchstart = "setMouseState(0)"
+        ontouchend = "setMouseState(1)"
+        onmouseout = "setMouseState(1)"
         id="canvas">
         
     </canvas>
     <p id="display">
         
     </p>
-  <script src="Point.js"></script>
-  <script src="script.js"></script>
+    <script src="script.js"></script>
+    <script src="Point.js"></script>
+<!--     <script src="postLoading.js"></script> -->
 </body>
 
 </html>
