@@ -9,18 +9,31 @@
 </head>
 <body>
 <!--       <script src="script.js"></script> -->
-    <div id="canvasHolder">
-        <canvas 
-            onmousemove = "testMouse(event, false)"
-            onmousedown = "setMouseState(event, ACTIVE); testMouse(event, false)"
-            onmouseup = "setMouseState(event, INACTIVE)"
-            ontouchmove = "testMouse(event, true)"
-            ontouchstart = "setMouseState(event, ACTIVE); testMouse(event, true)"
-            ontouchend = "setMouseState(event, INACTIVE)"
-            onmouseout = "setMouseState(event, INACTIVE)"
-            id="canvas">
-        </canvas>    
+    <div id="layout">
+        <div class="canvasHolder">
+            <canvas 
+                onmousemove = "testMouse(event, false)"
+                onmousedown = "setMouseState(event, ACTIVE); testMouse(event, false)"
+                onmouseup = "setMouseState(event, INACTIVE)"
+                ontouchmove = "testMouse(event, true)"
+                ontouchstart = "setMouseState(event, ACTIVE); testMouse(event, true)"
+                ontouchend = "setMouseState(event, INACTIVE)"
+                onmouseout = "setMouseState(event, INACTIVE)"
+                id="canvas">
+            </canvas>    
+        </div>
+    
+        
+        <div class="canvasHolder">
+            <canvas id="canvasForDrawing">
+            </canvas>
+        </div>    
     </div>
+
+    <div id="currentColor">
+        
+    </div>
+    
     
 
     <div id="adjustors">
@@ -44,13 +57,11 @@
         <div id="color">
             <form  onsubmit="return false">
                 <label for="red"> R: </label>
-                <input type="range" min=0 max=255 step=1 name="red" id="red"/>
+                <input class=".colors" type="range" oninput="changeSliderColor()" min=0 max=255 step=1 name="red" id="red"/>
                 <label for="green"> G: </label>
-                <input type="range" min=0 max=255 step=1 name="green" id="green"/>
+                <input class=".colors" type="range" oninput="changeSliderColor()" min=0 max=255 step=1 name="green" id="green"/>
                 <label for="blue"> B: </label>
-                <input type="range" min=0 max=255 step=1 name="blue" id="blue"/>
-                <label for="opacity"> Opacity: </label>
-                <input type="range" min=0 max=255 step=1 name="opacity" id="opacity" value=255/>
+                <input class=".colors" type="range" oninput="changeSliderColor()" min=0 max=255 step=1 name="blue" id="blue"/>
                 <button type="button"
                     onclick="changeColor()">
                     Change Color: 
@@ -63,16 +74,30 @@
         <label for="fileName"> Name of Image: </label>
         <input type="text" id="fileName" name="fileName"/>
     </form>
+    
     <p>
         <a download="getFileName()" href="" onclick="downloadImg(this)">
             Download the canvas:
         </a>
     </p>
-    
-    
-    <script src="script.js"></script>
+    <form id="pressButton">
+        <label for="addLayer">Add a layer</label>
+        <input type="button" name="addLayer" onclick="addAnotherLayer()"/>
+    </form>
+
+    <form id="layerLayout">
+        <label for="displayLayers">Select a layer: </label>
+        <input list="layers"/>
+    </form>
+
+    <datalist>
+        <i
+    </datalist>
     <script src="Point.js"></script>
-<!--     <script src="postLoading.js"></script> -->
+    <script src="CompleteCanvas.js"></script>
+        <script src="script.js"></script>
+
+    <!--     <script src="postLoading.js"></script> -->
 </body>
 
 </html>

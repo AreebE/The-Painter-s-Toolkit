@@ -1,7 +1,8 @@
 var text = document.getElementById("display");
 
 console.log("finished loaded");
-document.getElementsByClassName
+// document.getElementsByClassName
+var canvasHolders = document.getElementsByClassName("canvasHolder");
 var canvas = document.getElementById("canvas");
  // 
 var context = canvas.getContext("2d");
@@ -13,6 +14,8 @@ var INACTIVE = 1;
 var ACTIVE = 0;
 var state = 1;
 var lineStroke = 5;
+var completeDrawing = document.getElementById("canvasForDrawing");
+var drawing = new CompleteCanvas(canvas, canvas.width, canvas.height);
 
 const valMap = new Map();
 
@@ -33,8 +36,12 @@ valMap.set(13, 'd');
 valMap.set(14, 'e');
 valMap.set(15, 'f');
 
+var LARGEST_SIZE = 600;
+var SMALLEST_SIZE = 50;
 function testMouse(event, touch)
 {
+        // console.log("here," + event.touches[0].clientX);
+
     if (this.state == INACTIVE)
     {
         return;
@@ -58,15 +65,15 @@ function testMouse(event, touch)
     
                 // console.log("Running loop  " + lineStroke);
 
-    let x = event.clientX;       
-    let y = event.clientY;
+    let x = event.offsetX;       
+    let y = event.offsetY;
     if (x == undefined)
     {
-        x = event.touches[0].clientX;
-        y = event.touches[0].clientY;
+        x = event.touches[0].clientX - bounds.left;
+        y = event.touches[0].clientY - bounds.top;
     }
-    const relLeft = x - bounds.left;
-    const relTop = y - bounds.top;
+    // const relLeft = x - bounds.left;
+    // const relTop = y - bounds.top;
     // const totWidth = canvas.style.width;
     // const totHeight = canvas.style.height;
     context.beginPath()
@@ -75,7 +82,7 @@ function testMouse(event, touch)
     {
         // context.lin
         context.moveTo(prevPoint.getX() / bounds.width * canvas.width, prevPoint.getY() / bounds.height * canvas.height);
-        context.lineTo(relLeft / bounds.width * canvas.width, relTop / bounds.height * canvas.height);
+        context.lineTo(x / bounds.width * canvas.width, y / bounds.height * canvas.height);
         context.stroke();
         
         // console.log(bounds.right -bounds.left);
@@ -83,32 +90,41 @@ function testMouse(event, touch)
         // console.log("also, " + relLeft + ", " + relTop);
         // console.log("and " + x + ", " + y + " with " + bounds.left + ", " + bounds.top);
     }
-        context.arc(relLeft / bounds.width * canvas.width, relTop / bounds.height * canvas.height, lineStroke / 2, 0, Math.PI * 2);
-
+        context.arc(x / bounds.width * canvas.width, y / bounds.height * canvas.height, lineStroke / 2, 0, Math.PI * 2);
+    // console.log(x + ", " + y);
     context.fill();
     context.closePath();
-    this.prevPoint = new Point(relLeft, relTop);
+    this.prevPoint = new Point(x, y);
+    // console.log(completeDrawing.getContext("2d"));
+    // console.log(drawing.getCompleteDrawing() == null);
+    drawing.updateData(context.getImageData(0, 0, canvas.width, canvas.height))
+    completeDrawing.getContext("2d").putImageData(drawing.getCompleteDrawing(), 0, 0);
 }
 
 
 function setMouseState(event, newState)
 {
-    // console.log("thesiujiowrfikrp" + event);
-    context.beginPath();
-        let bounds = canvas.getBoundingClientRect();
-
-    let x = event.clientX;       
-    let y = event.clientY;
-    if (x == undefined)
+    // console.log("thesiujiowrfikrp" + newState);
+    if (newState == ACTIVE)
     {
-        x = event.touches[0].clientX;
-        y = event.touches[0].clientY;
+         context.beginPath();
+        let bounds = canvas.getBoundingClientRect();
+   
+        let x = event.offsetX;       
+        let y = event.offsetY;
+        
+        if (x == undefined)
+        {
+            x = event.touches[0].clientX - bounds.left;
+            y = event.touches[0].clientY - bounds.top;
+        }
+        // const relLeft = x - bounds.left;
+        // const relTop = y - bounds.top;
+        context.arc(x / bounds.width * canvas.width, y / bounds.height * canvas.height, lineStroke / 2, 0, Math.PI * 2);
+        context.fill();
+        context.closePath();
     }
-    const relLeft = x - bounds.left;
-    const relTop = y - bounds.top;
-    context.arc(relLeft / bounds.width * canvas.width, relTop / bounds.height * canvas.height, lineStroke / 2, 0, Math.PI * 2);
-    context.fill();
-    context.closePath();
+    
     state = newState;   
     // console.log(state);
     this.prevPoint = null;
@@ -119,11 +135,26 @@ function resizeCanvas()
 {
     let height = document.getElementById("height").value; 
     let width = document.getElementById("width").value;
-    context.canvas.innerWidth = width;
-    context.canvas.innerHeight = height;
+    // context.canvas.innerWidth = width;
+    // context.canvas.innerHeight = height;
+    let canvasHeight = height;
+    let canvasWidth = width;
+    let ratio = width / height;
+    const currentImageData = context.getImageData(0, 0, canvas.width, canvas.height);
+  
+    
+    canvasHolders[0].style.height = canvasHeight + "px";
+    canvasHolders[0].style.width = canvasWidth + "px";
+    canvasHolders[1].style.height = canvasHeight + "px";
+    canvasHolders[1].style.width = canvasWidth + "px";
     canvas.height = height;
     canvas.width = width;
     console.log(height + ", " + width);
+    // canvas.drawImage(imageData, 0, 0);
+    context.putImageData(currentImageData, 0, 0);
+    drawing.resize(width, height);
+    completeDrawing.height = height;
+    completeDrawing.width = width;
     // canvas.resize();
     return false;
 }
@@ -136,17 +167,39 @@ function adjustLineStroke()
     return false;
 }
 
+function changeSliderColor()
+{
+    // console.log("called");
+    let currentColorDisplay = document.getElementById("currentColor");
+    let red       = document.getElementById("red");
+    let green     = document.getElementById("green");
+    let blue      = document.getElementById("blue");
+    let colors = 
+        [
+            convertToHexcode([0, green.value, blue.value, 255]),
+            convertToHexcode([255, green.value, blue.value, 255]),
+            convertToHexcode([red.value, 0, blue.value, 255]),
+            convertToHexcode([red.value, 255, blue.value, 255]),
+            convertToHexcode([red.value, green.value, 0, 255]),
+            convertToHexcode([red.value, green.value, 255, 0])
+        ];
+    console.log(colors);
+    console.log(red.style.background +"aa");
+    red.style.background = "linear-gradient(to right, " + colors[0] + ", " + colors[1] +")";
+    green.style.background = "linear-gradient(to right, " + colors[2] + ", " + colors[3] +")";
+    blue.style.background = "linear-gradient(to right, " + colors[4] + ", " + colors[5] +")";
+    currentColorDisplay.style.backgroundColor = "rgb(" + red.value + "," + green.value + "," + blue.value + ")";
+}
 function changeColor()
 {
     let red       = document.getElementById("red").value;
     let green     = document.getElementById("green").value;
     let blue      = document.getElementById("blue").value;
-    let opacity   = document.getElementById("opacity").value;
 
     // console.log (red + ", " + green + ", " + blue);
     
-    console.log(convertToHexcode([red, green, blue, opacity]));
-    let code = convertToHexcode([red, green, blue, opacity]);
+    // console.log(convertToHexcode([red, green, blue, opacity]));
+    let code = "rgb(" + red + "," + green + "," + blue + ")";
     context.strokeStyle = code;
     context.fillStyle = code;
 }
@@ -177,8 +230,17 @@ function getFileName()
 
 function downloadImg(aElement)
 {
-    aElement.href = canvas.toDataURL("image/png");
-    aElement.download =getFileName();
+    aElement.href = completeDrawing.toDataURL("image/png");
+    aElement.download = getFileName();
     // aElement.click();
     console.log("saved, " + aElement.href);
+}
+
+/**
+* Does it refer to this?
+*/
+function addAnotherLayer()
+{
+    context.clearRect(0, 0, canvas.width, canvas.height);
+    drawing.addLayer(0, context.getImageData(0, 0, canvas.width, canvas.height));
 }
