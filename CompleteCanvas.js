@@ -1,13 +1,15 @@
 class CompleteCanvas
 {
-       constructor(firstCanvasData, width, height)
+    constructor(firstCanvasData, width, height, menu)
     {
         this.layers = new Array();
-        this.currentIndex = 0;
+        this.currentIndex = -1;
         this.selectedCanvasData = firstCanvasData;        
         this.width = width;
         this.height = height; 
+        this.menu = menu;
         this.addLayer(this.currentIndex, this.selectedCanvasData)
+        
     }
 
     getLength()
@@ -24,6 +26,13 @@ class CompleteCanvas
     {
         // console.log(this.currentIndex);
         this.layers[this.currentIndex] = newData;
+        console.log(this.currentIndex);
+        let layerView = this.menu.children[this.currentIndex].children[0];
+        // console.log(layerView);
+        let sampleCanvas = document.createElement("canvas");
+        sampleCanvas.getContext("2d").putImageData(newData, 0, 0);
+        layerView.src = sampleCanvas.toDataURL("image/png");
+        
     }
     
     getCompleteDrawing()
@@ -69,6 +78,23 @@ Adding a layer?
     addLayer(position, canvasData)
     {
         this.layers.splice(position, 0, canvasData);
+        let newButton = document.createElement("button");
+        let image = document.createElement("img");
+        // let menuItem = document.createElement("menuitem");
+        let sampleCanvas = document.createElement("canvas");
+        // console.log("test data type: " + canvasData);
+        sampleCanvas.getContext("2d").putImageData(canvasData, 0, 0);
+        image.src = sampleCanvas.toDataURL("image/png");
+        newButton.class = "layerView";
+        newButton.id = "layer " + position;
+        // menuItem.style.width = "100px";
+        // menuItem.style.height = "100px";
+        newButton.appendChild(image);
+        
+        this.menu.appendChild(newButton);
+        // console.log(this.menu.innerHTML);
+        this.currentIndex++;
+        console.log(this.currentIndex);
         // console.log(this.layers + "E");
     }
 

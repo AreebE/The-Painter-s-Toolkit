@@ -85,13 +85,24 @@
         <input type="button" name="addLayer" onclick="addAnotherLayer()"/>
     </form>
 
-    <form id="layerLayout">
-        <label for="displayLayers">Select a layer: </label>
-        <input list="layers"/>
-    </form>
+    <div id="layers">
+        
+<!--             <button type="button">
+                Test 1
+            </button>
+            <button type="button">
+                Test 2
+            </button>
+            <button type="button">
+                Test 3
+            </button> -->
+        
+    </div>
 
-    <datalist>
-        <i
+    <datalist id="layers">
+        <option value=0 >
+        <option value=1>
+        <option value=2>
     </datalist>
     <script src="Point.js"></script>
     <script src="CompleteCanvas.js"></script>

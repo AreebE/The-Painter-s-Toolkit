@@ -9,13 +9,14 @@ var context = canvas.getContext("2d");
 context.canvas.innerWidth = canvas.getBoundingClientRect().width;
 context.canvas.innerHeight = canvas.getBoundingClientRect().height;
 var prevPoint;
+var menu = document.getElementById("layers")
 
 var INACTIVE = 1;
 var ACTIVE = 0;
 var state = 1;
 var lineStroke = 5;
 var completeDrawing = document.getElementById("canvasForDrawing");
-var drawing = new CompleteCanvas(canvas, canvas.width, canvas.height);
+var drawing = new CompleteCanvas(context.getImageData(0, 0, canvas.width, canvas.height), canvas.width, canvas.height, menu);
 
 const valMap = new Map();
 
