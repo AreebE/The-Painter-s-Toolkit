@@ -51,6 +51,18 @@ valMap.set(13, 'd');
 valMap.set(14, 'e');
 valMap.set(15, 'f');
 
+document.getElementById("currentLayerSelected").value = drawing.getCurrentIndex();
+document.getElementById("height").value = 150;
+document.getElementById("width").value = 300;
+document.getElementById("stroke").value = 5;
+document.getElementById("red").value = 0;
+document.getElementById("green").value = 0;
+document.getElementById("blue").value = 0;
+
+changeSliderColor();
+changeColor();
+// deleteLayer();
+
 var LARGEST_SIZE = 600;
 var SMALLEST_SIZE = 50;
 function testMouse(event, touch)
@@ -258,10 +270,18 @@ function downloadImg(aElement)
 /**
 * Does it refer to this?
 */
-function addAnotherLayer()
+function addAnotherLayer(isBefore)
 {
+    let layerSelected = parseInt(document.getElementById("currentLayerSelected").value);
+    
     context.clearRect(0, 0, canvas.width, canvas.height);
-    drawing.addLayer(drawing.getCurrentIndex() + 1, context.getImageData(0, 0, canvas.width, canvas.height));
+    console.log()
+    if (!isBefore)
+    {
+        layerSelected += 1;
+    }
+    drawing.addLayer(layerSelected, context.getImageData(0, 0, canvas.width, canvas.height));
+    document.getElementById("currentLayerSelected").value = drawing.getCurrentIndex();
 }
 
 function changeLayer()
@@ -277,7 +297,20 @@ function changeLayer()
     }
 }
 
-function deleteLayer()
+function deleteALayer()
 {
-    
+    if (drawing.getNumLayers() == 1)
+    {
+        drawing.clearLayer(0);
+        context.clearRect(0, 0, canvas.width, canvas.height);      
+    }
+    else 
+    {
+        let layerSelected = parseInt(document.getElementById("currentLayerSelected").value);
+        drawing.deleteLayer(layerSelected);
+        context.clearRect(0, 0, canvas.width, canvas.height);      
+        context.putImageData(drawing.getCurrentData(), 0, 0);
+    }
+    document.getElementById("currentLayerSelected").value = drawing.getCurrentIndex();
+       
 }

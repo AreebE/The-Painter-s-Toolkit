@@ -31,9 +31,10 @@ class CompleteCanvas
     {
         // console.log(this.currentIndex);
         this.layers.at(this.currentIndex)[this.DATA_INDEX] = newData;
-        // console.log(this.currentIndex);
+        console.log(this.currentIndex);
         let layerView = this.menu.children[this.currentIndex].children[0];
         // console.log(layerView);
+        // console.log(this.curren)
         let sampleCanvas = document.createElement("canvas");
         sampleCanvas.getContext("2d").putImageData(newData, 0, 0);
         layerView.src = sampleCanvas.toDataURL("image/png");
@@ -129,10 +130,19 @@ Adding a layer?
 
                                        canvas.listener.changedCanvas();
                                    });
-        
-        this.menu.appendChild(newButton);
+
+        if (position == this.menu.children.length)
+        {
+            this.menu.appendChild(newButton);
+        }
+        else  
+        {
+            let prevButton = this.menu.children[position];
+            this.menu.insertBefore(newButton, prevButton);
+        }
+        // this.menu.children.(position, 0, newButton);
         // console.log(this.newButton.width);
-        this.currentIndex++;
+        this.currentIndex = position;
         // console.log(this.currentIndex);
         // console.log( "E");
     }
@@ -204,5 +214,24 @@ Adding a layer?
     getNumLayers()
     {
         return this.layers.length;
+    }
+
+    deleteLayer(layerSelected)
+    {
+        this.layers.splice(layerSelected, 1);
+        let childToRemove = this.menu.children[layerSelected];
+        this.menu.removeChild(childToRemove);
+        this.currentIndex = (layerSelected == this.layers.length)? this.layers.length - 1: layerSelected;
+        console.log(this.layers.length + ", " + layerSelected);
+        console.log(this.currentIndex);
+        this.listener.changedCanvas();
+    }
+
+    clearLayer(layerSelected)
+    {
+        this.layers.at(layerSelected)[this.DATA_INDEX] = new ImageData(this.width, this.height);
+        this.listener.changedCanvas();
+        this.updateData(this.layers.at(layerSelected)[this.DATA_INDEX]);
+
     }
 }
