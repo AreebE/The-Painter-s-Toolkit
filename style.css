@@ -85,5 +85,33 @@ input[type = "range"]::-moz-range-thumb {
 
 #layers
 {
-    background: #FFFFFF;
+/*     background: #FFFFFF; */
+    width: 90%;
+    height: 175px;
+
+    display: flex;
+    overflow-x: scroll;
 }
+
+.visible
+{
+    background-color: #ecf4a9;
+}
+
+.invisible
+{
+    color: #999999;
+}
+
+.layerDisplay
+{
+    width: inherit;
+    height: inherit;
+}
+
+.layerButton
+{
+    width: 300px;
+    height: 150px;
+}
+

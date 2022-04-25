@@ -1,3 +1,17 @@
+class Listener
+{
+    constructor()
+    {
+        
+    }
+
+    changedCanvas()
+    {
+        drawCompleteDrawing();
+    }
+    
+}
+
 var text = document.getElementById("display");
 
 console.log("finished loaded");
@@ -16,7 +30,7 @@ var ACTIVE = 0;
 var state = 1;
 var lineStroke = 5;
 var completeDrawing = document.getElementById("canvasForDrawing");
-var drawing = new CompleteCanvas(context.getImageData(0, 0, canvas.width, canvas.height), canvas.width, canvas.height, menu);
+var drawing = new CompleteCanvas(context.getImageData(0, 0, canvas.width, canvas.height), canvas.width, canvas.height, menu, new Listener());
 
 const valMap = new Map();
 
@@ -102,6 +116,10 @@ function testMouse(event, touch)
     completeDrawing.getContext("2d").putImageData(drawing.getCompleteDrawing(), 0, 0);
 }
 
+function drawCompleteDrawing()
+{
+    completeDrawing.getContext("2d").putImageData(drawing.getCompleteDrawing(), 0, 0);
+}
 
 function setMouseState(event, newState)
 {
@@ -182,7 +200,7 @@ function changeSliderColor()
             convertToHexcode([red.value, 0, blue.value, 255]),
             convertToHexcode([red.value, 255, blue.value, 255]),
             convertToHexcode([red.value, green.value, 0, 255]),
-            convertToHexcode([red.value, green.value, 255, 0])
+            convertToHexcode([red.value, green.value, 255, 255])
         ];
     console.log(colors);
     console.log(red.style.background +"aa");
@@ -243,5 +261,23 @@ function downloadImg(aElement)
 function addAnotherLayer()
 {
     context.clearRect(0, 0, canvas.width, canvas.height);
-    drawing.addLayer(0, context.getImageData(0, 0, canvas.width, canvas.height));
+    drawing.addLayer(drawing.getCurrentIndex() + 1, context.getImageData(0, 0, canvas.width, canvas.height));
+}
+
+function changeLayer()
+{
+    console.log("here, " + drawing.getNumLayers());
+    let layerSelected = document.getElementById("currentLayerSelected").value;
+    if (layerSelected >= 0 && layerSelected <= drawing.getNumLayers() - 1)
+    {
+        console.log("creating layer");
+        drawing.selectLayer(layerSelected);
+        context.clearRect(0, 0, canvas.width, canvas.height);      
+        context.putImageData(drawing.getCurrentData(), 0, 0);
+    }
+}
+
+function deleteLayer()
+{
+    
 }
