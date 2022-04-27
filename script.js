@@ -361,10 +361,13 @@ function changeLayer()
 {
     console.log("here, " + drawing.getNumLayers());
     let layerSelected = document.getElementById("currentLayerSelected").value;
-    if (layerSelected >= 0 && layerSelected <= drawing.getNumLayers() - 1)
+    const LAYER_REGEX = new RegExp("[0-9]+")
+    if (layerSelected >= 0 && 
+        layerSelected <= drawing.getNumLayers() - 1
+       && LAYER_REGEX.test(layerSelected))
     {
         console.log("creating layer");
-        drawing.selectLayer(layerSelected);
+        drawing.selectLayer(parseInt(layerSelected));
         context.clearRect(0, 0, canvas.width, canvas.height);      
         context.putImageData(drawing.getCurrentData(), 0, 0);
             changeColor();

@@ -89,7 +89,7 @@ Adding a layer?
     addLayer(position, canvasData, addingBeforeLayer)
     {
         let layerInfo = [false, canvasData];
-        // console.log(layerInfo);
+        // console.log(position + " eeee");
         // console.log(layerInfo);
         this.layers.splice(position, 0, layerInfo);
                 // console.log(this.layers.at(0)[1].data);
@@ -134,6 +134,7 @@ Adding a layer?
         }
         // console.log(position + ", " +  addingBeforeLayer);
         this.selectLayerAdvanced(position, addingBeforeLayer);
+        // console.log(position + " \n" + this.layers.at(0));
      }
 
     findButton(buttonToCheck)
@@ -184,7 +185,7 @@ Adding a layer?
 
     selectLayer(selectedLayer)
     {
-        console.log(" aaaa");
+        // console.log(" aaaa");
         this.selectLayerAdvanced(selectedLayer, false);
     }
 
@@ -193,10 +194,20 @@ Adding a layer?
         console.log(isBeforeLayer + ", " + selectedLayer);
         if (this.currentIndex != -1)
         {
-            const position = this.currentIndex + ((isBeforeLayer)? 1: 0);
-            const oldVisibilityClass = (this.layers.at(position)[this.IS_DISABLED_INDEX])? this.DISABLED_CLASS: this.ENABLED_CLASS;
-            this.menu.children[position].className = this.BASIC_BUTTON_CLASS + " " + oldVisibilityClass;    
-            // console.log(oldVisibilityClass + ", " + position + " , " + this.layers.at(position)[this.IS_DISABLED_INDEX]);
+            try 
+            {
+                const position = this.currentIndex + parseInt((isBeforeLayer)? 1: 0);
+                // console.log(this.currentIndex + 1);
+                // console.log(" \"" + position + "\" " + this.layers.at(position));
+                const oldVisibilityClass = (this.layers.at(position)[this.IS_DISABLED_INDEX])? this.DISABLED_CLASS: this.ENABLED_CLASS;
+                // console.log(this.menu.children[position].className);
+                this.menu.children[position].className = this.BASIC_BUTTON_CLASS + " " + oldVisibilityClass;    
+                // console.log(oldVisibilityClass + ", " + position + " , " + this.layers.at(position)[this.IS_DISABLED_INDEX]);
+        
+            } catch (error)
+            {
+                // occurs when the layer that was trying to be selected is actually deleted.
+            }
         }
         this.currentIndex = selectedLayer;
         const visibilityClass = (this.layers.at(this.currentIndex)[this.IS_DISABLED_INDEX])? this.DISABLED_CLASS: this.ENABLED_CLASS;
@@ -218,7 +229,7 @@ Adding a layer?
         this.layers.splice(layerSelected, 1);
         let childToRemove = this.menu.children[layerSelected];
         this.menu.removeChild(childToRemove);
-        this.selectLayer((layerSelected == this.layers.length)? this.layers.length - 1: layerSelected);
+        this.selectLayer(((layerSelected == this.layers.length)? this.layers.length - 1: layerSelected));
         console.log(this.layers.length + ", " + layerSelected);
         console.log(this.currentIndex);
         this.listener.changedCanvas();
