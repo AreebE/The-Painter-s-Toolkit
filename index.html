@@ -31,7 +31,9 @@
     </div>
 
     <div id="currentColor">
-        
+    </div>
+
+    <div id="proposedColor">
     </div>
     
     
@@ -57,14 +59,20 @@
         <div id="color">
             <form  onsubmit="return false">
                 <label for="red"> R: </label>
-                <input class=".colors" type="range" oninput="changeSliderColor()" min=0 max=255 step=1 name="red" id="red"/>
+                <input class="colors" type="range" oninput="changeSliderColor()" min=0 max=255 step=1 name="red" id="red"/>
                 <label for="green"> G: </label>
-                <input class=".colors" type="range" oninput="changeSliderColor()" min=0 max=255 step=1 name="green" id="green"/>
+                <input class="colors" type="range" oninput="changeSliderColor()" min=0 max=255 step=1 name="green" id="green"/>
                 <label for="blue"> B: </label>
-                <input class=".colors" type="range" oninput="changeSliderColor()" min=0 max=255 step=1 name="blue" id="blue"/>
+                <input class="colors" type="range" oninput="changeSliderColor()" min=0 max=255 step=1 name="blue" id="blue"/>
+                <label for="hashcode"> Hashcode: </label>
+                <input class="colors" type="text" name="hashcode" id="hashcode"/>
                 <button type="button"
                     onclick="changeColor()">
                     Change Color: 
+                </button>
+                <button type="button"
+                    onclick="addToPalette()">
+                    Add to Palette"
                 </button>
             </form>
         </div>    
@@ -82,9 +90,9 @@
     </p>
     <form id="pressButton">
         <label for="addLayerAfter">Add a layer after</label>
-        <input type="button" name="addLayerAfter" onclick="addAnotherLayer(true)"/>
+        <input type="button" name="addLayerAfter" onclick="addAnotherLayer(false)"/>
         <label for="addLayerBefore">Add a layer before</label>
-        <input type="button" name="addLayerBefore" onclick="addAnotherLayer(false)"/>
+        <input type="button" name="addLayerBefore" onclick="addAnotherLayer(true)"/>
         
         <label for="selectLayer">Selected Layer:</label>
         <input id="currentLayerSelected" type="number" name="selectLayer" oninput="changeLayer()"/>

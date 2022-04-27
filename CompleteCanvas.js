@@ -2,6 +2,11 @@ class CompleteCanvas
 {
     IS_DISABLED_INDEX = 0;
     DATA_INDEX = 1; 
+
+    BASIC_BUTTON_CLASS = "layerButton";
+    DISABLED_CLASS = "invisible";
+    ENABLED_CLASS = "visible";
+    SELECTED_CLASS = "selected";
     
     constructor(firstCanvasData, width, height, menu, listener)
     {
@@ -13,7 +18,8 @@ class CompleteCanvas
         this.width = width;
         this.height = height; 
         this.menu = menu;
-        this.addLayer(0, this.selectedCanvasData)
+        this.addLayer(0, this.selectedCanvasData, false)
+        
         // console.log(this.layers.at(0)[1]);     
     }
 
@@ -44,12 +50,7 @@ class CompleteCanvas
     
     getCompleteDrawing()
     {
-        // let c = document.createElement("canvas").getContext("2d");
-        // c.height = this.height;
-        // c.width = this.width;
-                // console.log("__________");
-
-        // console.log(this.layers.length); 
+          // console.log(this.layers.length); 
         let image = new ImageData(this.width, this.height);
         // console.log(image.height + ", " + image.width);
         for (let i = 0; i < image.data.length; i+= 4)
@@ -77,25 +78,15 @@ class CompleteCanvas
                     image.data[i + 2] = layerImg.data[i + 2];
                     image.data[i + 3] = 255;
                 }
-                // c.putImageData(this.layers.at(i), 0, 0);
-                // console.log("image data for " + i);
-                // console.log ("image data for " + i)
-            }
+             }
         }
-        // for (let i = 0; i < this.layers.length; i++)
-        // {
-        //     c.putImageData(this.layers.at(i), 0, 0);
-            // console.log("image data for " + i);
-        //     // console.log ("image data for " + i)
-        // }
-        // // console.log(this.layers.at(0));
-        return image;
+         return image;
     }
 
     /**
 Adding a layer?
 */
-    addLayer(position, canvasData)
+    addLayer(position, canvasData, addingBeforeLayer)
     {
         let layerInfo = [false, canvasData];
         // console.log(layerInfo);
@@ -114,23 +105,24 @@ Adding a layer?
         // menuItem.style.width = "100px";
         // menuItem.style.height = "100px";
         const canvas = this;
-        const layerNumber = position;
         newButton.appendChild(image);
-        const oldClassName = "layerButton ";
+        const oldClassName = this.BASIC_BUTTON_CLASS + " ";
         newButton.className = oldClassName + "visible";
         console.log(newButton.className);
         newButton.addEventListener("click", function changeLayerSettings()
                                    {
                                        // console.log(layerNumber);
-                                        
+                                        const layerNumber = canvas.findButton(newButton);                                        
                                         canvas.layers.at(layerNumber)[canvas.IS_DISABLED_INDEX] = 
                                                 !canvas.layers.at(layerNumber)[canvas.IS_DISABLED_INDEX];
-                                        newButton.className = oldClassName + ((canvas.layers.at(layerNumber)[canvas.IS_DISABLED_INDEX])? "invisible" : "visible");
+                                        const visibilityClass = ((canvas.layers.at(layerNumber)[canvas.IS_DISABLED_INDEX])? canvas.DISABLED_CLASS: canvas.ENABLED_CLASS) + " "; 
+                                        const selectedClass = (layerNumber == canvas.currentIndex)? canvas.SELECTED_CLASS: "";
+                                        newButton.className = oldClassName + visibilityClass + selectedClass;
+                                        console.log(selectedClass + " " + canvas.currentIndex + " " + layerNumber); 
                                         console.log(newButton.className);
 
                                        canvas.listener.changedCanvas();
                                    });
-
         if (position == this.menu.children.length)
         {
             this.menu.appendChild(newButton);
@@ -140,11 +132,20 @@ Adding a layer?
             let prevButton = this.menu.children[position];
             this.menu.insertBefore(newButton, prevButton);
         }
-        // this.menu.children.(position, 0, newButton);
-        // console.log(this.newButton.width);
-        this.currentIndex = position;
-        // console.log(this.currentIndex);
-        // console.log( "E");
+        // console.log(position + ", " +  addingBeforeLayer);
+        this.selectLayerAdvanced(position, addingBeforeLayer);
+     }
+
+    findButton(buttonToCheck)
+    {
+        for (let i = 0; i < this.menu.children.length; i++)
+        {
+            if (this.menu.children[i] == buttonToCheck)
+            {
+                return i;
+            }
+        }
+        return 0;        
     }
 
     resize(newWidth, newHeight)
@@ -175,35 +176,31 @@ Adding a layer?
                 }        
             }
             
-            // let currentNewImageIndex = 0;
-            // for (let j = 0; j < this.width * this.length * 4; j++)
-            // {
-            //     for (let k = 0; k < this.width * 4; k += 4)
-            //     {
-            //         let currentSpot = j + k;
-            //         newImage.data[currentNewImageIndex] = layerImg.data[currentSpot];
-            //         newImage.data[currentNewImageIndex + 1] = layerImg.data[currentSpot + 1];
-            //         newImage.data[currentNewImageIndex + 2] = layerImg.data[currentSpot + 2];
-            //         newImage.data[currentNewImageIndex + 3] = layerImg.data[currentSpot + 3];
-            //         currentNewImageIndex += 4;
-            //     }        
-            //     currentNewImageIndex += (newWidth - this.width) * 4;
-            // }
-            this.layers.at(i)[this.DATA_INDEX] = newImage;
-            
-            // layerImg.width = newWidth;
-            // layerImg.height = newHeight;
-            // c.putImageData(this.layers.at(i), 0, 0);
-            // console.log("image data for " + i);
-            // console.log ("image data for " + i)
-        }
+       this.layers.at(i)[this.DATA_INDEX] = newImage;
+       }
         this.width = newWidth;
         this.height = newHeight;
     }
 
     selectLayer(selectedLayer)
     {
+        console.log(" aaaa");
+        this.selectLayerAdvanced(selectedLayer, false);
+    }
+
+    selectLayerAdvanced(selectedLayer, isBeforeLayer)
+    {
+        console.log(isBeforeLayer + ", " + selectedLayer);
+        if (this.currentIndex != -1)
+        {
+            const position = this.currentIndex + ((isBeforeLayer)? 1: 0);
+            const oldVisibilityClass = (this.layers.at(position)[this.IS_DISABLED_INDEX])? this.DISABLED_CLASS: this.ENABLED_CLASS;
+            this.menu.children[position].className = this.BASIC_BUTTON_CLASS + " " + oldVisibilityClass;    
+            // console.log(oldVisibilityClass + ", " + position + " , " + this.layers.at(position)[this.IS_DISABLED_INDEX]);
+        }
         this.currentIndex = selectedLayer;
+        const visibilityClass = (this.layers.at(this.currentIndex)[this.IS_DISABLED_INDEX])? this.DISABLED_CLASS: this.ENABLED_CLASS;
+        this.menu.children[this.currentIndex].className = this.BASIC_BUTTON_CLASS + " " + visibilityClass + " " + this.SELECTED_CLASS;
     }
 
     getCurrentData()
@@ -221,7 +218,7 @@ Adding a layer?
         this.layers.splice(layerSelected, 1);
         let childToRemove = this.menu.children[layerSelected];
         this.menu.removeChild(childToRemove);
-        this.currentIndex = (layerSelected == this.layers.length)? this.layers.length - 1: layerSelected;
+        this.selectLayer((layerSelected == this.layers.length)? this.layers.length - 1: layerSelected);
         console.log(this.layers.length + ", " + layerSelected);
         console.log(this.currentIndex);
         this.listener.changedCanvas();

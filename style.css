@@ -83,6 +83,13 @@ input[type = "range"]::-moz-range-thumb {
     border-radius: 50px;    
 }
 
+#proposedColor
+{
+    width: 50px;
+    height: 50px;
+    border-radius: 50px;    
+}
+
 #layers
 {
 /*     background: #FFFFFF; */
@@ -93,9 +100,16 @@ input[type = "range"]::-moz-range-thumb {
     overflow-x: scroll;
 }
 
+
+
 .visible
 {
     background-color: #ecf4a9;
+}
+
+.selected
+{
+    background-color: #8cff8a;
 }
 
 .invisible
@@ -112,6 +126,5 @@ input[type = "range"]::-moz-range-thumb {
 .layerButton
 {
     width: 300px;
-    height: 150px;
 }
 

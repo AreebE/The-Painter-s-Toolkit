@@ -34,6 +34,7 @@ var drawing = new CompleteCanvas(context.getImageData(0, 0, canvas.width, canvas
 
 const valMap = new Map();
 
+// num --> char
 valMap.set(0, '0');
 valMap.set(1, '1');
 valMap.set(2, '2');
@@ -44,12 +45,30 @@ valMap.set(6, '6');
 valMap.set(7, '7');
 valMap.set(8, '8');
 valMap.set(9, '9');
-valMap.set(10, 'a');
-valMap.set(11, 'b');
-valMap.set(12, 'c');
-valMap.set(13, 'd');
-valMap.set(14, 'e');
-valMap.set(15, 'f');
+valMap.set(10, 'A');
+valMap.set(11, 'B');
+valMap.set(12, 'C');
+valMap.set(13, 'D');
+valMap.set(14, 'E');
+valMap.set(15, 'F');
+
+// char --> num
+valMap.set('0', 0);
+valMap.set('1', 1);
+valMap.set('2', 2);
+valMap.set('3', 3);
+valMap.set('4', 4);
+valMap.set('5', 5);
+valMap.set('6', 6);
+valMap.set('7', 7);
+valMap.set('8', 8);
+valMap.set('9', 9);
+valMap.set('A', 10);
+valMap.set('B', 11);
+valMap.set('C', 12);
+valMap.set('D', 13);
+valMap.set('E', 14);
+valMap.set('F', 15);
 
 document.getElementById("currentLayerSelected").value = drawing.getCurrentIndex();
 document.getElementById("height").value = 150;
@@ -186,6 +205,8 @@ function resizeCanvas()
     drawing.resize(width, height);
     completeDrawing.height = height;
     completeDrawing.width = width;
+        changeColor();
+
     // canvas.resize();
     return false;
 }
@@ -201,10 +222,11 @@ function adjustLineStroke()
 function changeSliderColor()
 {
     // console.log("called");
-    let currentColorDisplay = document.getElementById("currentColor");
+    let proposedColorDisplay = document.getElementById("proposedColor");
     let red       = document.getElementById("red");
     let green     = document.getElementById("green");
     let blue      = document.getElementById("blue");
+    let hashcode = document.getElementById("hashcode");
     let colors = 
         [
             convertToHexcode([0, green.value, blue.value, 255]),
@@ -214,25 +236,45 @@ function changeSliderColor()
             convertToHexcode([red.value, green.value, 0, 255]),
             convertToHexcode([red.value, green.value, 255, 255])
         ];
-    console.log(colors);
-    console.log(red.style.background +"aa");
+    // console.log(colors);
+    // console.log(red.style.background +"aa");
     red.style.background = "linear-gradient(to right, " + colors[0] + ", " + colors[1] +")";
     green.style.background = "linear-gradient(to right, " + colors[2] + ", " + colors[3] +")";
     blue.style.background = "linear-gradient(to right, " + colors[4] + ", " + colors[5] +")";
-    currentColorDisplay.style.backgroundColor = "rgb(" + red.value + "," + green.value + "," + blue.value + ")";
+    hashcode.value =  convertToHexcode([red.value, green.value, blue.value]);
+    proposedColorDisplay.style.backgroundColor = "rgb(" + red.value + "," + green.value + "," + blue.value + ")";
+
 }
+
 function changeColor()
 {
-    let red       = document.getElementById("red").value;
-    let green     = document.getElementById("green").value;
-    let blue      = document.getElementById("blue").value;
-
+    let red       = document.getElementById("red");
+    let green     = document.getElementById("green");
+    let blue      = document.getElementById("blue");
     // console.log (red + ", " + green + ", " + blue);
     
     // console.log(convertToHexcode([red, green, blue, opacity]));
-    let code = "rgb(" + red + "," + green + "," + blue + ")";
-    context.strokeStyle = code;
-    context.fillStyle = code;
+    let code = document.getElementById("hashcode");
+    const COLOR_HASHCODE_REGEX = new RegExp("#[0-9A-F]{6}");
+    // console.log(code.value + ", " + COLOR_HASHCODE_REGEX.test(code.value))
+    if (COLOR_HASHCODE_REGEX.test(code.value))
+    {
+        let hashcode = ''+ code.value;
+        // console.log(code.value);
+        let currentBrush = document.getElementById("currentColor");
+        context.strokeStyle = code.value;
+        context.fillStyle = code.value;
+        red.value = convertToVal(hashcode.substring(1, 3));
+        green.value = convertToVal(hashcode.substring(3, 5));
+        blue.value = convertToVal(hashcode.substring(5, 7));
+
+        // console.log(hashcode.substring(1, 3));
+        // console.log(convertToVal(hashcode.substring(1, 3)));
+        // console.log (red.value + "," + blue.value + ", " + green.value + "");
+        currentBrush.style.backgroundColor = "rgb(" + red.value + "," + green.value + "," + blue.value + ")";
+
+        changeSliderColor();
+    }
 }
 
 function convertToHexcode(values)
@@ -254,6 +296,14 @@ function convertToHexcode(values)
     return code;
 }
 
+function convertToVal(hexcode)
+{
+    const bit16 = valMap.get(hexcode.substring(0, 1));
+    const bit1 = valMap.get(hexcode.substring(1, 2));
+    // console.log(bit16 + ", "+ bit1);
+    return bit16 * 16 + bit1;
+}
+
 function getFileName()
 {
     return document.getElementById("fileName").value;        
@@ -264,7 +314,7 @@ function downloadImg(aElement)
     aElement.href = completeDrawing.toDataURL("image/png");
     aElement.download = getFileName();
     // aElement.click();
-    console.log("saved, " + aElement.href);
+    // console.log("saved, " + aElement.href);
 }
 
 /**
@@ -280,8 +330,9 @@ function addAnotherLayer(isBefore)
     {
         layerSelected += 1;
     }
-    drawing.addLayer(layerSelected, context.getImageData(0, 0, canvas.width, canvas.height));
+    drawing.addLayer(layerSelected, context.getImageData(0, 0, canvas.width, canvas.height), isBefore);
     document.getElementById("currentLayerSelected").value = drawing.getCurrentIndex();
+    changeColor();
 }
 
 function changeLayer()
@@ -294,7 +345,9 @@ function changeLayer()
         drawing.selectLayer(layerSelected);
         context.clearRect(0, 0, canvas.width, canvas.height);      
         context.putImageData(drawing.getCurrentData(), 0, 0);
+            changeColor();
     }
+    
 }
 
 function deleteALayer()
@@ -311,6 +364,8 @@ function deleteALayer()
         context.clearRect(0, 0, canvas.width, canvas.height);      
         context.putImageData(drawing.getCurrentData(), 0, 0);
     }
+        changeColor();
+
     document.getElementById("currentLayerSelected").value = drawing.getCurrentIndex();
        
 }
