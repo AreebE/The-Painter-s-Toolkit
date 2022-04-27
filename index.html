@@ -94,6 +94,24 @@
                 class="brushButton"
                 id="blender">
         </button>
+        <button type="button"
+                onclick="selectBrush(STAMP)"
+                class="brushButton"
+                id="stamp">
+        </button>
+    </div>
+
+    <form>
+        <label for="stampImage">Image for Stamp:</label>
+        <input type="file" accept="image/png" name="stampImage" id="stampImageForm"/>
+        <button type="button"
+            onclick="setStampImage()">
+            Submit stamp:
+        </button>
+    </form>
+    
+    <div id="stampImageContainer">
+        <img id="stampImage">
     </div>
     
     <div id="paletteMenu"> 

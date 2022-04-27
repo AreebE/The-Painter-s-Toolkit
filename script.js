@@ -102,12 +102,21 @@ var SMALLEST_SIZE = 50;
 var PEN = 0;
 var ERASER = 1;
 var BLENDER = 2;
+var STAMP = 3;
 var selectedBrush = PEN;
 var brushMenu = document.getElementById("brushMenu");
 selectBrush(PEN);
+var stampImage = document.getElementById("stampImage");
 
 function drawLine(event, touch)
 {
+      let x = event.offsetX;       
+    let y = event.offsetY;
+    if (x == undefined)
+    {
+        x = event.touches[0].clientX - bounds.left;
+        y = event.touches[0].clientY - bounds.top;
+    }
         // console.log("here," + event.touches[0].clientX);
     let oldStroke = context.strokeStyle;
     let oldfill = context.fillStyle;
@@ -131,6 +140,11 @@ function drawLine(event, touch)
         case BLENDER:
             context.globalCompositeOperation = "lighter";
             break;
+        case STAMP:
+            context.globalCompositeOperation = "source-over";
+            context.drawImage(stampImage, x, y);
+            return;
+            
     }
         // console.log("test" + activeLayer.toString());
     // console.log ("called teh test");
@@ -151,13 +165,7 @@ function drawLine(event, touch)
     
                 // console.log("Running loop  " + lineStroke);
 
-    let x = event.offsetX;       
-    let y = event.offsetY;
-    if (x == undefined)
-    {
-        x = event.touches[0].clientX - bounds.left;
-        y = event.touches[0].clientY - bounds.top;
-    }
+  
     // const relLeft = x - bounds.left;
     // const relTop = y - bounds.top;
     // const totWidth = activeLayer.style.width;
@@ -194,28 +202,10 @@ function drawCompleteDrawing()
     completeDrawingCanvas.getContext("2d").putImageData(drawing.getCompleteDrawing(), 0, 0);
 }
 
-function setMouseState(event, newState)
+function setMouseState(event, newState, touch)
 {
     // console.log("thesiujiowrfikrp" + newState);
-    if (newState == ACTIVE)
-    {
-         context.beginPath();
-        let bounds = activeLayer.getBoundingClientRect();
-   
-        let x = event.offsetX;       
-        let y = event.offsetY;
-        
-        if (x == undefined)
-        {
-            x = event.touches[0].clientX - bounds.left;
-            y = event.touches[0].clientY - bounds.top;
-        }
-        // const relLeft = x - bounds.left;
-        // const relTop = y - bounds.top;
-        context.arc(x / bounds.width * activeLayer.width, y / bounds.height * activeLayer.height, lineStroke / 2, 0, Math.PI * 2);
-        context.fill();
-        context.closePath();
-    }
+
     
     state = newState;   
     // console.log(state);
@@ -424,10 +414,29 @@ function deleteALayer()
 
 function selectBrush(chosenBrush)
 {
+    if (chosenBrush == STAMP
+       && !setStampImage())
+    {
+        return;
+    }
     const brushButtonClass = "brushButton";
     const selectedClass = "selected";
     brushMenu.children[selectedBrush].className = brushButtonClass;
     selectedBrush = chosenBrush;
     brushMenu.children[selectedBrush].className = brushButtonClass + " " + selectedClass;
     console.log(brushMenu.children[selectedBrush].className);
+}
+
+function setStampImage()
+{
+    let stampSource = document.getElementById("stampImageForm").files[0];
+    if (stampSource == null)
+    {
+        console.log("eee");
+        stampImage.src = null;
+        return false;   
+    }
+    let url = URL.createObjectURL(stampSource);
+    stampImage.src = url;
+    return true;
 }
