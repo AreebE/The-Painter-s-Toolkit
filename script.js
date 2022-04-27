@@ -27,12 +27,13 @@ var text = document.getElementById("display");
 
 console.log("finished loaded");
 // document.getElementsByClassName
-var canvasHolders = document.getElementsByClassName("canvasHolder");
-var canvas = document.getElementById("canvas");
- // 
-var context = canvas.getContext("2d");
-context.canvas.innerWidth = canvas.getBoundingClientRect().width;
-context.canvas.innerHeight = canvas.getBoundingClientRect().height;
+var canvasContainers = document.getElementsByClassName("canvasContainer");
+var activeLayer = document.getElementById("activeLayer");
+console.log(activeLayer);
+// 
+var context = activeLayer.getContext("2d");
+context.canvas.innerWidth = activeLayer.getBoundingClientRect().width;
+context.canvas.innerHeight = activeLayer.getBoundingClientRect().height;
 var prevPoint;
 var menu = document.getElementById("layers")
 
@@ -40,8 +41,8 @@ var INACTIVE = 1;
 var ACTIVE = 0;
 var state = 1;
 var lineStroke = 5;
-var completeDrawing = document.getElementById("canvasForDrawing");
-var drawing = new CompleteCanvas(context.getImageData(0, 0, canvas.width, canvas.height), canvas.width, canvas.height, menu, new Listener());
+var completeDrawingCanvas = document.getElementById("completeDrawing");
+var drawing = new CompleteCanvas(context.getImageData(0, 0, activeLayer.width, activeLayer.height), activeLayer.width, activeLayer.height, menu, new Listener());
 
 const valMap = new Map();
 
@@ -97,25 +98,51 @@ changeColor();
 
 var LARGEST_SIZE = 600;
 var SMALLEST_SIZE = 50;
-function testMouse(event, touch)
+
+var PEN = 0;
+var ERASER = 1;
+var BLENDER = 2;
+var selectedBrush = PEN;
+var brushMenu = document.getElementById("brushMenu");
+selectBrush(PEN);
+
+function drawLine(event, touch)
 {
         // console.log("here," + event.touches[0].clientX);
-
+    let oldStroke = context.strokeStyle;
+    let oldfill = context.fillStyle;
+    
     if (this.state == INACTIVE)
     {
         return;
     }
-        // console.log("test" + canvas.toString());
+    switch (selectedBrush)
+    {
+        case PEN:
+        default:
+            context.globalCompositeOperation = "source-over"
+            break;
+            
+        case ERASER:
+            context.strokeStyle = "argb(0, 0, 0, 0)";
+            context.fillStyle = "argb(0, 0, 0, 0)";
+            context.globalCompositeOperation = "destination-out";
+            break;
+        case BLENDER:
+            context.globalCompositeOperation = "lighter";
+            break;
+    }
+        // console.log("test" + activeLayer.toString());
     // console.log ("called teh test");
     // state = ACTIVE;
-    let bounds = canvas.getBoundingClientRect();
-    // context.canvas.innerHeight = bounds.right - bounds.left;
-    // context.canvas.innerWidth = bounds.up - bounds.down;
+    let bounds = activeLayer.getBoundingClientRect();
+    // context.activeLayer.innerHeight = bounds.right - bounds.left;
+    // context.activeLayer.innerWidth = bounds.up - bounds.down;
     
     
     
     // console.log(bounds.width + ", " + bounds.height);
-    // console.log(context.canvas.innerWidth + ';'  +  context.canvas.innerHeight)
+    // console.log(context.activeLayer.innerWidth + ';'  +  context.activeLayer.innerHeight)
     // text.innerHTML = "Mouse x = " + x + "; Mouse y = " + y
                     // +"\n" + "RelativeX = " + (relLeft) + ", RelativeY = " + (relTop);
     // context.strokeStyle = 'black';
@@ -133,15 +160,15 @@ function testMouse(event, touch)
     }
     // const relLeft = x - bounds.left;
     // const relTop = y - bounds.top;
-    // const totWidth = canvas.style.width;
-    // const totHeight = canvas.style.height;
+    // const totWidth = activeLayer.style.width;
+    // const totHeight = activeLayer.style.height;
     context.beginPath()
     
     if (this.prevPoint != null)
     {
         // context.lin
-        context.moveTo(prevPoint.getX() / bounds.width * canvas.width, prevPoint.getY() / bounds.height * canvas.height);
-        context.lineTo(x / bounds.width * canvas.width, y / bounds.height * canvas.height);
+        context.moveTo(prevPoint.getX() / bounds.width * activeLayer.width, prevPoint.getY() / bounds.height * activeLayer.height);
+        context.lineTo(x / bounds.width * activeLayer.width, y / bounds.height * activeLayer.height);
         context.stroke();
         
         // console.log(bounds.right -bounds.left);
@@ -149,20 +176,22 @@ function testMouse(event, touch)
         // console.log("also, " + relLeft + ", " + relTop);
         // console.log("and " + x + ", " + y + " with " + bounds.left + ", " + bounds.top);
     }
-        context.arc(x / bounds.width * canvas.width, y / bounds.height * canvas.height, lineStroke / 2, 0, Math.PI * 2);
+        context.arc(x / bounds.width * activeLayer.width, y / bounds.height * activeLayer.height, lineStroke / 2, 0, Math.PI * 2);
     // console.log(x + ", " + y);
     context.fill();
     context.closePath();
     this.prevPoint = new Point(x, y);
     // console.log(completeDrawing.getContext("2d"));
     // console.log(drawing.getCompleteDrawing() == null);
-    drawing.updateData(context.getImageData(0, 0, canvas.width, canvas.height))
-    completeDrawing.getContext("2d").putImageData(drawing.getCompleteDrawing(), 0, 0);
+    drawing.updateData(context.getImageData(0, 0, activeLayer.width, activeLayer.height))
+    completeDrawingCanvas.getContext("2d").putImageData(drawing.getCompleteDrawing(), 0, 0);
+    context.strokeStyle = oldStroke;
+    context.s
 }
 
 function drawCompleteDrawing()
 {
-    completeDrawing.getContext("2d").putImageData(drawing.getCompleteDrawing(), 0, 0);
+    completeDrawingCanvas.getContext("2d").putImageData(drawing.getCompleteDrawing(), 0, 0);
 }
 
 function setMouseState(event, newState)
@@ -171,7 +200,7 @@ function setMouseState(event, newState)
     if (newState == ACTIVE)
     {
          context.beginPath();
-        let bounds = canvas.getBoundingClientRect();
+        let bounds = activeLayer.getBoundingClientRect();
    
         let x = event.offsetX;       
         let y = event.offsetY;
@@ -183,7 +212,7 @@ function setMouseState(event, newState)
         }
         // const relLeft = x - bounds.left;
         // const relTop = y - bounds.top;
-        context.arc(x / bounds.width * canvas.width, y / bounds.height * canvas.height, lineStroke / 2, 0, Math.PI * 2);
+        context.arc(x / bounds.width * activeLayer.width, y / bounds.height * activeLayer.height, lineStroke / 2, 0, Math.PI * 2);
         context.fill();
         context.closePath();
     }
@@ -198,29 +227,29 @@ function resizeCanvas()
 {
     let height = document.getElementById("height").value; 
     let width = document.getElementById("width").value;
-    // context.canvas.innerWidth = width;
-    // context.canvas.innerHeight = height;
+    // context.activeLayer.innerWidth = width;
+    // context.activeLayer.innerHeight = height;
     let canvasHeight = height;
     let canvasWidth = width;
     let ratio = width / height;
-    const currentImageData = context.getImageData(0, 0, canvas.width, canvas.height);
+    const currentImageData = context.getImageData(0, 0, activeLayer.width, activeLayer.height);
   
     
-    canvasHolders[0].style.height = canvasHeight + "px";
-    canvasHolders[0].style.width = canvasWidth + "px";
-    canvasHolders[1].style.height = canvasHeight + "px";
-    canvasHolders[1].style.width = canvasWidth + "px";
-    canvas.height = height;
-    canvas.width = width;
+    canvasContainers[0].style.height = canvasHeight + "px";
+    canvasContainers[0].style.width = canvasWidth + "px";
+    canvasContainers[1].style.height = canvasHeight + "px";
+    canvasContainers[1].style.width = canvasWidth + "px";
+    activeLayer.height = height;
+    activeLayer.width = width;
     console.log(height + ", " + width);
-    // canvas.drawImage(imageData, 0, 0);
+    // activeLayer.drawImage(imageData, 0, 0);
     context.putImageData(currentImageData, 0, 0);
     drawing.resize(width, height);
-    completeDrawing.height = height;
-    completeDrawing.width = width;
+    completeDrawingCanvas.height = height;
+    completeDrawingCanvas.width = width;
         changeColor();
 
-    // canvas.resize();
+    // activeLayer.resize();
     return false;
 }
 
@@ -333,7 +362,7 @@ function getFileName()
 
 function downloadImg(aElement)
 {
-    aElement.href = completeDrawing.toDataURL("image/png");
+    aElement.href = completeDrawingCanvas.toDataURL("image/png");
     aElement.download = getFileName();
     // aElement.click();
     // console.log("saved, " + aElement.href);
@@ -346,13 +375,13 @@ function addAnotherLayer(isBefore)
 {
     let layerSelected = parseInt(document.getElementById("currentLayerSelected").value);
     
-    context.clearRect(0, 0, canvas.width, canvas.height);
+    context.clearRect(0, 0, activeLayer.width, activeLayer.height);
     console.log()
     if (!isBefore)
     {
         layerSelected += 1;
     }
-    drawing.addLayer(layerSelected, context.getImageData(0, 0, canvas.width, canvas.height), isBefore);
+    drawing.addLayer(layerSelected, context.getImageData(0, 0, activeLayer.width, activeLayer.height), isBefore);
     document.getElementById("currentLayerSelected").value = drawing.getCurrentIndex();
     changeColor();
 }
@@ -368,7 +397,7 @@ function changeLayer()
     {
         console.log("creating layer");
         drawing.selectLayer(parseInt(layerSelected));
-        context.clearRect(0, 0, canvas.width, canvas.height);      
+        context.clearRect(0, 0, activeLayer.width, activeLayer.height);      
         context.putImageData(drawing.getCurrentData(), 0, 0);
             changeColor();
     }
@@ -380,17 +409,25 @@ function deleteALayer()
     if (drawing.getNumLayers() == 1)
     {
         drawing.clearLayer(0);
-        context.clearRect(0, 0, canvas.width, canvas.height);      
+        context.clearRect(0, 0, activeLayer.width, activeLayer.height);      
     }
     else 
     {
         let layerSelected = parseInt(document.getElementById("currentLayerSelected").value);
         drawing.deleteLayer(layerSelected);
-        context.clearRect(0, 0, canvas.width, canvas.height);      
+        context.clearRect(0, 0, activeLayer.width, activeLayer.height);      
         context.putImageData(drawing.getCurrentData(), 0, 0);
     }
-        changeColor();
+    changeColor();
+    document.getElementById("currentLayerSelected").value = drawing.getCurrentIndex();  
+}
 
-    document.getElementById("currentLayerSelected").value = drawing.getCurrentIndex();
-       
+function selectBrush(chosenBrush)
+{
+    const brushButtonClass = "brushButton";
+    const selectedClass = "selected";
+    brushMenu.children[selectedBrush].className = brushButtonClass;
+    selectedBrush = chosenBrush;
+    brushMenu.children[selectedBrush].className = brushButtonClass + " " + selectedClass;
+    console.log(brushMenu.children[selectedBrush].className);
 }

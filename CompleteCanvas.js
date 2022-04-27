@@ -240,6 +240,5 @@ Adding a layer?
         this.layers.at(layerSelected)[this.DATA_INDEX] = new ImageData(this.width, this.height);
         this.listener.changedCanvas();
         this.updateData(this.layers.at(layerSelected)[this.DATA_INDEX]);
-
     }
 }

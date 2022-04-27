@@ -10,22 +10,22 @@
 <body>
 <!--       <script src="script.js"></script> -->
     <div id="layout">
-        <div class="canvasHolder">
+        <div class="canvasContainer">
             <canvas 
-                onmousemove = "testMouse(event, false)"
-                onmousedown = "setMouseState(event, ACTIVE); testMouse(event, false)"
+                onmousemove = "drawLine(event, false)"
+                onmousedown = "setMouseState(event, ACTIVE); drawLine(event, false)"
                 onmouseup = "setMouseState(event, INACTIVE)"
-                ontouchmove = "testMouse(event, true)"
-                ontouchstart = "setMouseState(event, ACTIVE); testMouse(event, true)"
+                ontouchmove = "drawLine(event, true)"
+                ontouchstart = "setMouseState(event, ACTIVE); drawLine(event, true)"
                 ontouchend = "setMouseState(event, INACTIVE)"
                 onmouseout = "setMouseState(event, INACTIVE)"
-                id="canvas">
+                id="activeLayer">
             </canvas>    
         </div>
     
         
-        <div class="canvasHolder">
-            <canvas id="canvasForDrawing">
+        <div class="canvasContainer">
+            <canvas id="completeDrawing">
             </canvas>
         </div>    
     </div>
@@ -78,6 +78,24 @@
         </div>    
     </div>
 
+    <div id="brushMenu">
+        <button type="button"
+                onclick="selectBrush(PEN)"
+                class="brushButton"
+                id="pen">
+        </button>
+        <button type="button"
+                onclick="selectBrush(ERASER)"
+                class="brushButton"
+                id="eraser">
+        </button>
+        <button type="button"
+                onclick="selectBrush(BLENDER)"
+                class="brushButton"
+                id="blender">
+        </button>
+    </div>
+    
     <div id="paletteMenu"> 
         
     </div>
