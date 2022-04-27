@@ -119,8 +119,8 @@ function drawLine(event, touch)
     }
         // console.log("here," + event.touches[0].clientX);
     let oldStroke = context.strokeStyle;
-    let oldfill = context.fillStyle;
-    
+    let oldFillStyle = context.fillStyle;
+    let drawArc = true;
     if (this.state == INACTIVE)
     {
         return;
@@ -139,11 +139,10 @@ function drawLine(event, touch)
             break;
         case BLENDER:
             context.globalCompositeOperation = "lighter";
+            drawArc = false;
             break;
         case STAMP:
-            context.globalCompositeOperation = "source-over";
-            context.drawImage(stampImage, x, y);
-            return;
+           return;
             
     }
         // console.log("test" + activeLayer.toString());
@@ -184,7 +183,10 @@ function drawLine(event, touch)
         // console.log("also, " + relLeft + ", " + relTop);
         // console.log("and " + x + ", " + y + " with " + bounds.left + ", " + bounds.top);
     }
+    if (drawArc)
+    {
         context.arc(x / bounds.width * activeLayer.width, y / bounds.height * activeLayer.height, lineStroke / 2, 0, Math.PI * 2);
+    }
     // console.log(x + ", " + y);
     context.fill();
     context.closePath();
@@ -194,7 +196,7 @@ function drawLine(event, touch)
     drawing.updateData(context.getImageData(0, 0, activeLayer.width, activeLayer.height))
     completeDrawingCanvas.getContext("2d").putImageData(drawing.getCompleteDrawing(), 0, 0);
     context.strokeStyle = oldStroke;
-    context.s
+    context.fillStyle = oldFillStyle;
 }
 
 function drawCompleteDrawing()
@@ -209,6 +211,14 @@ function setMouseState(event, newState, touch)
     
     state = newState;   
     // console.log(state);
+    if (state == ACTIVE && selectedBrush == STAMP)
+    {
+         context.globalCompositeOperation = "source-over";
+            context.drawImage(stampImage, event.offsetX, event.offsetY);
+            drawing.updateData(context.getImageData(0, 0, activeLayer.width, activeLayer.height))
+            completeDrawingCanvas.getContext("2d").putImageData(drawing.getCompleteDrawing(), 0, 0);
+            
+    }
     this.prevPoint = null;
     // console.log(prev)
 }

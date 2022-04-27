@@ -1,0 +1,14 @@
+#adjustors
+{
+    display: flex;
+}
+
+#strokeForm 
+{
+    flex: 1;
+}
+
+#attributesForm
+{
+    flex: 1;
+}

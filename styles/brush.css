@@ -1,0 +1,46 @@
+#brushMenu
+{
+    background: #AAAAAA;
+    width: 200px;
+    height: 50px;
+    display: flex;
+}
+
+.brushButton
+{
+    width: 50px;
+    height: inherit;
+    background-color: #abcdef;
+}
+
+#pen
+{
+    background-image: url("res/feather.png");
+    background-size: 50px;
+}
+
+#eraser
+{
+    background-image: url("res/eraser.png");
+    background-size: 50px;
+}
+
+#blender
+{
+    background-image: url("res/kitchen-blender.png");
+    background-size: 50px;
+}
+
+#stamp
+{
+    background-image: url("res/stamp.png");
+    background-size: 50px;
+}
+
+/* # */
+
+#stampImage
+{
+    width:50px;
+    height: 50px;
+}
