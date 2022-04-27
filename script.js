@@ -9,7 +9,18 @@ class Listener
     {
         drawCompleteDrawing();
     }
-    
+}
+
+class PaletteListener
+{
+    constructor()
+    {}
+
+    passHexcode(newHexcode)
+    {
+        document.getElementById("hashcode").value = newHexcode;
+        changeColor();
+    }
 }
 
 var text = document.getElementById("display");
@@ -34,6 +45,8 @@ var drawing = new CompleteCanvas(context.getImageData(0, 0, canvas.width, canvas
 
 const valMap = new Map();
 
+var paletteMenu = document.getElementById("paletteMenu");
+var palette = new Palette(paletteMenu, new PaletteListener());
 // num --> char
 valMap.set(0, '0');
 valMap.set(1, '1');
@@ -246,6 +259,15 @@ function changeSliderColor()
 
 }
 
+function addToPalette()
+{
+    let code = document.getElementById("hashcode").value;
+    const COLOR_HASHCODE_REGEX = new RegExp("#[0-9A-F]{6}");
+    if (COLOR_HASHCODE_REGEX.test(code))
+    {
+        palette.addColor(code);
+    }
+}
 function changeColor()
 {
     let red       = document.getElementById("red");
