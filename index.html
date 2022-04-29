@@ -36,75 +36,73 @@
         </div>    
     </div>
 
-    <div id="currentColor">
-    </div>
-
-    <div id="proposedColor">
-    </div>
-    
-    
-
-    <div id="adjustors">
-        <form id="attributeForm" onsubmit="return false">
-            <label for="height"> Height: </label>
-            <input type="number" id="height" name="height" min="50"/>
-            <label for="width"> Width: </label>
-            <input type="number" id="width" name="width" min="50"/> 
-            <button type="button" onclick="resizeCanvas()"> Resize: </button>
-        </form>
-    
-        <form id="strokeForm" onsubmit="return false">
-            <label for="stroke"> Stroke: </label>
-            <input type="number" id="stroke" name="stroke"/>
-            
-            <button type="button" 
-                onclick="adjustLineStroke()"> 
-                Adjust Stroke: </button> 
-        </form>
-    
-        <div id="color">
-            <form  onsubmit="return false">
-                <label for="red"> R: </label>
-                <input class="colors" type="range" oninput="changeSliderColor()" min=0 max=255 step=1 name="red" id="red"/>
-                <label for="green"> G: </label>
-                <input class="colors" type="range" oninput="changeSliderColor()" min=0 max=255 step=1 name="green" id="green"/>
-                <label for="blue"> B: </label>
-                <input class="colors" type="range" oninput="changeSliderColor()" min=0 max=255 step=1 name="blue" id="blue"/>
-                <label for="hashcode"> Hashcode: </label>
-                <input class="colors" type="text" name="hashcode" id="hashcode"/>
-                <button type="button"
-                    onclick="changeColor()">
-                    Change Color: 
-                </button>
-                <button type="button"
-                    onclick="addToPalette()">
-                    Add to Palette"
-                </button>
+    <div id="heightAndWidth">
+        <div class="category">
+            <p >Height:</p>
+            <form>
+                <input type="number" id="height" name="height" min="50"/>
             </form>
-        </div>    
+        </div>
+        <div class="category">
+            <p >Width:</p>
+            <form>
+                 <input type="number" id="width" name="width" min="50"/> 
+            </form>
+        </div>
+        <button type="button" onclick="resizeCanvas()"> 
+            Resize: 
+        </button>
+        <div class="category">
+            <p> Stroke: </p>
+
+            <form id="strokeForm">
+                <input type="number" id="stroke" name="stroke"/>
+            </form>
+        </div>
+        <button type="button" 
+                onclick="adjustLineStroke()"> 
+                Adjust Stroke: 
+        </button> 
+        
+    </div>
+    
+    <div id="brushAttributes">
+        <div>
+            <p> Brush Type:</p>
+                <div id="brushMenu">
+                    <button type="button"
+                            onclick="selectBrush(PEN)"
+                            class="brushButton"
+                            id="pen">
+                    </button>
+                    <button type="button"
+                            onclick="selectBrush(ERASER)"
+                            class="brushButton"
+                            id="eraser">
+                    </button>
+                    <button type="button"
+                            onclick="selectBrush(BLENDER)"
+                            class="brushButton"
+                            id="blender">
+                    </button>
+                    <button type="button"
+                            onclick="selectBrush(STAMP)"
+                            class="brushButton"
+                            id="stamp">
+                    </button>
+                </div>
+
+        </div>
+        <div>
+            <p>Brush Color:</p>
+            <div id="currentColor">
+            </div>
+        </div>
+        
     </div>
 
-    <div id="brushMenu">
-        <button type="button"
-                onclick="selectBrush(PEN)"
-                class="brushButton"
-                id="pen">
-        </button>
-        <button type="button"
-                onclick="selectBrush(ERASER)"
-                class="brushButton"
-                id="eraser">
-        </button>
-        <button type="button"
-                onclick="selectBrush(BLENDER)"
-                class="brushButton"
-                id="blender">
-        </button>
-        <button type="button"
-                onclick="selectBrush(STAMP)"
-                class="brushButton"
-                id="stamp">
-        </button>
+    <div id="paletteMenu"> 
+        
     </div>
 
     <form>
@@ -119,21 +117,48 @@
     <div id="stampImageContainer">
         <img id="stampImage">
     </div>
+
     
-    <div id="paletteMenu"> 
+    
+
+    <div id="adjustors">
+        <div id="color">
+            <form  onsubmit="return false">
+                <label for="red"> R: </label>
+                <input class="colors" type="range" oninput="changeSliderColor()" min=0 max=255 step=1 name="red" id="red"/>
+                <label for="green"> G: </label>
+                <input class="colors" type="range" oninput="changeSliderColor()" min=0 max=255 step=1 name="green" id="green"/>
+                <label for="blue"> B: </label>
+                <input class="colors" type="range" oninput="changeSliderColor()" min=0 max=255 step=1 name="blue" id="blue"/>
+                
+                
+            </form>
+        </div>    
+        <div>
+            <div id="proposedColor">
+                <p> Color: </p>
+            </div>
+           
+            <form>
+                <input class="colors" type="text" name="hashcode" id="hashcode"/>                
+            </form>
+            <button type="button"
+                    onclick="changeColor()">
+                    Change Color: 
+            </button>
+            <button type="button"
+                    onclick="addToPalette()">
+                    Add to Palette"
+            </button>
+        </div>
         
     </div>
+
+  
     
-    <form id="fileNameDisplay">
-        <label for="fileName"> Name of Image: </label>
-        <input type="text" id="fileName" name="fileName"/>
-    </form>
     
-    <p>
-        <a download="getFileName()" href="" onclick="downloadImg(this)">
-            Download the canvas:
-        </a>
-    </p>
+    
+    
     <form id="pressButton">
         <label for="addLayerAfter">Add a layer after</label>
         <input type="button" name="addLayerAfter" onclick="addAnotherLayer(false)"/>
@@ -150,13 +175,23 @@
         
     </div>     
 
+    <form id="fileNameDisplay">
+        <label for="fileName"> Name of Image: </label>
+        <input type="text" id="fileName" name="fileName"/>
+    </form>
+    
+    <p>
+        <a download="getFileName()" href="" onclick="downloadImg(this)">
+            Download the canvas:
+        </a>
+    </p>
     
     <script src="Point.js"></script>
     <script src="CompleteCanvas.js"></script>
         <script src="Palette.js"></script>
 
         <script src="script.js"></script>
-
+    
     <!--     <script src="postLoading.js"></script> -->
 </body>
 

@@ -3,7 +3,8 @@ body
     height: 100%;
     width: 100%;
     background: rgb(236, 200, 101);
-
+    font-size: 200%;
+    font-family: Tahoma, Arial;
 }
 
 .selected

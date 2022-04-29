@@ -8,7 +8,60 @@
     flex: 1;
 }
 
-#attributesForm
+#heightAndWidth
 {
-    flex: 1;
+    height: 400px;
+    width: 200px;
+    margin: 3%;
+    display: block;
+/*     background: #b3d9ff; */
+
+}
+
+#heightAndWidth .category 
+{
+    background: #CFCFCF;
+
+/*     background-color: #AAAAAA; */
+    margin-left: 10%;
+    margin-top: 2.5%;
+/*     margin-right: 10%; */
+    display: flex;
+/*     margin: ; */
+    width: 90%;
+    height: 70px;
+/*     padding: 2.5%; */
+
+}
+
+#heightAndWidth .category p
+{
+    text-align: center;
+    display: inline;
+    flex-shrink: 0;
+    font-size: 0.5em;
+}
+
+#heightAndWidth .category form
+{
+    flex-shrink: 0;
+    margin: auto;
+    display: block;
+    width: 50px;
+}
+
+#heightAndWidth .category form input
+{
+    height: inherit;
+    width: inherit;
+}
+
+
+#heightAndWidth .category button 
+{
+    
+    width: 50%;
+    height: 50px;
+    margin: 40%;
+
 }
