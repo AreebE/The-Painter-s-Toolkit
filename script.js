@@ -442,6 +442,7 @@ function setStampImage()
     let stampSource = document.getElementById("stampImageForm").files[0];
     if (stampSource == null)
     {
+        selectBrush(PEN);
         console.log("eee");
         stampImage.src = null;
         return false;   

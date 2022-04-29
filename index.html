@@ -6,10 +6,12 @@
   <meta name="viewport" content="width=device-width height=device-height" initial-scale="1.0">
     <title>replit</title>
     <link href="styles/brush.css" rel="stylesheet" type="text/css" />
+
     <link href="styles/canvas.css" rel="stylesheet" type="text/css" />
     <link href="styles/colorSelector.css" rel="stylesheet" type="text/css" />
     <link href="styles/palette.css" rel="stylesheet" type="text/css" />
     <link href="styles/otherAdjustors.css" rel="stylesheet" type="text/css" />
+
     <link href="styles/style.css" rel="stylesheet" type="text/css" />
 
 </head>
@@ -36,39 +38,49 @@
         </div>    
     </div>
 
-    <div id="heightAndWidth">
-        <div class="category">
-            <p >Height:</p>
-            <form>
-                <input type="number" id="height" name="height" min="50"/>
-            </form>
-        </div>
-        <div class="category">
-            <p >Width:</p>
-            <form>
-                 <input type="number" id="width" name="width" min="50"/> 
-            </form>
-        </div>
-        <button type="button" onclick="resizeCanvas()"> 
-            Resize: 
-        </button>
-        <div class="category">
-            <p> Stroke: </p>
-
-            <form id="strokeForm">
-                <input type="number" id="stroke" name="stroke"/>
-            </form>
-        </div>
-        <button type="button" 
-                onclick="adjustLineStroke()"> 
-                Adjust Stroke: 
-        </button> 
+    <div id="mainMenu">
+        <div id="heightAndWidth">
+            <div>
+                <div class="category">
+                    <p> Stroke: </p>
         
-    </div>
-    
-    <div id="brushAttributes">
-        <div>
-            <p> Brush Type:</p>
+                    <form id="strokeForm">
+                        <input type="number" id="stroke" name="stroke"/>
+                    </form>
+                </div>
+                <button type="button" 
+                        onclick="adjustLineStroke()"
+                        > 
+                        Adjust Stroke: 
+                </button> 
+            </div>
+            
+
+            <div>
+                <div class="category">
+                    <p >Height:</p>
+                    <form>
+                        <input type="number" id="height" name="height" min="50"/>
+                    </form>
+                </div>
+                <div class="category">
+                    <p >Width:</p>
+                    <form>
+                         <input type="number" id="width" name="width" min="50"/> 
+                    </form>
+                </div>
+                <button type="button" onclick="resizeCanvas()"> 
+                    Resize: 
+                </button>
+            </div>
+        </div>
+
+        <div class="divider">
+        </div>
+        
+        <div id="brushAttributes">
+            <div>
+                <p> Brush Type:</p>
                 <div id="brushMenu">
                     <button type="button"
                             onclick="selectBrush(PEN)"
@@ -91,85 +103,99 @@
                             id="stamp">
                     </button>
                 </div>
-
-        </div>
-        <div>
-            <p>Brush Color:</p>
-            <div id="currentColor">
+    
             </div>
-        </div>
-        
-    </div>
-
-    <div id="paletteMenu"> 
-        
-    </div>
-
-    <form>
-        <label for="stampImage">Image for Stamp:</label>
-        <input type="file" accept="image/png" name="stampImage" id="stampImageForm"/>
-        <button type="button"
-            onclick="setStampImage()">
-            Submit stamp:
-        </button>
-    </form>
-    
-    <div id="stampImageContainer">
-        <img id="stampImage">
-    </div>
-
-    
-    
-
-    <div id="adjustors">
-        <div id="color">
-            <form  onsubmit="return false">
-                <label for="red"> R: </label>
-                <input class="colors" type="range" oninput="changeSliderColor()" min=0 max=255 step=1 name="red" id="red"/>
-                <label for="green"> G: </label>
-                <input class="colors" type="range" oninput="changeSliderColor()" min=0 max=255 step=1 name="green" id="green"/>
-                <label for="blue"> B: </label>
-                <input class="colors" type="range" oninput="changeSliderColor()" min=0 max=255 step=1 name="blue" id="blue"/>
-                
-                
-            </form>
-        </div>    
-        <div>
-            <div id="proposedColor">
-                <p> Color: </p>
+            <div>
+                <p>Brush Color:</p>
+                <div id="currentColor">
+                </div>
             </div>
-           
+
+            <div id="stampMenu">
+                <div>
+                    <form>
+                        <label for="stampImage">Image for Stamp:</label>
+                        <input type="file" accept="image/png" name="stampImage" id="stampImageForm"/>
+                    </form>
+                    
+                    <div id="stampImageContainer">
+                        <img id="stampImage">
+                    </div>
+                </div>
+                
+                <button type="button"
+                        onclick="setStampImage()"
+                        >
+                        Submit stamp:
+                </button>
+            </div>
+            
+            
+        </div>
+
+        <div class="divider">
+        </div>
+
+        <div id="colorModifiers">
+            <div id="paletteMenu"> 
+        
+            </div>
             <form>
                 <input class="colors" type="text" name="hashcode" id="hashcode"/>                
             </form>
-            <button type="button"
-                    onclick="changeColor()">
-                    Change Color: 
-            </button>
-            <button type="button"
-                    onclick="addToPalette()">
-                    Add to Palette"
-            </button>
+            <div id="color">
+                <form>
+                    <label for="red"> R: </label>
+                    <input class="colors" type="range" oninput="changeSliderColor()" min=0 max=255 step=1 name="red" id="red"/>
+                </form>
+                <form>
+                    <label for="green"> G: </label>
+                    <input class="colors" type="range" oninput="changeSliderColor()" min=0 max=255 step=1 name="green" id="green"/>
+                </form>
+                <form>
+                    <label for="blue"> B: </label>
+                    <input class="colors" type="range" oninput="changeSliderColor()" min=0 max=255 step=1 name="blue" id="blue"/>
+                </form>
+            </div>
+            <div id="previewColorDisplay">
+                <p> Color: </p>
+                <div id="proposedColor">
+                </div>
+            </div>
+            
+            <div id="colorButtons">
+                <button type="button"
+                        onclick="changeColor()">
+                        Change Color: 
+                </button>
+                <button type="button"
+                        onclick="addToPalette()">
+                        Add to Palette
+                </button>
+            </div>
         </div>
-        
-    </div>
+    </div> 
 
-  
+    <div id="layerModifiers">
+        <form id="pressButton">
+            <label for="selectLayer">Selected Layer:</label>
+            <input id="currentLayerSelected" type="number" name="selectLayer" oninput="changeLayer()"/>
+        </form>
+        <button type="button"
+            onclick="addAnotherLayer(false)">
+            Add Layer After
+        </button>
+        <button type="button"
+            onclick="addAnotherLayer(true)">
+            Add Layer Before
+        </button>
+        <button type="button"
+            onclick="deleteALayer()"
+            id="deleteLayerButton">
+            Delete Layer        
+        </button>
+    </div>
     
-    
-    
-    
-    <form id="pressButton">
-        <label for="addLayerAfter">Add a layer after</label>
-        <input type="button" name="addLayerAfter" onclick="addAnotherLayer(false)"/>
-        <label for="addLayerBefore">Add a layer before</label>
-        <input type="button" name="addLayerBefore" onclick="addAnotherLayer(true)"/>
-        
-        <label for="selectLayer">Selected Layer:</label>
-        <input id="currentLayerSelected" type="number" name="selectLayer" oninput="changeLayer()"/>
-        <label for="deleteLayer">Delete this layer: </label>
-        <input type="button" name="deleteLayer" onclick="deleteALayer()"/>
-    </form>
 
     <div id="layers">
         

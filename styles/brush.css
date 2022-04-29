@@ -1,7 +1,30 @@
+#brushAttributes
+{
+    width: 400px;
+    flex-shrink: 0;
+    flex-grow: 0;
+}
+#brushAttributes div
+{
+    display: flex;    
+    background: #CFCFCF;
+    margin: 15px;
+}
+
+#brushAttributes p
+{
+    margin: auto;
+    font-size: .75em;
+    display: inline;
+    flex-shrink: 1;
+}
+
 #brushMenu
 {
+    margin: auto;
+    flex-shrink: 0;
+    flex-grow: 0;
     background: #AAAAAA;
-    width: 200px;
     height: 50px;
     display: flex;
 }
@@ -44,3 +67,16 @@
     width:50px;
     height: 50px;
 }
+
+#brushAttributes #stampMenu
+{
+    display: block;
+}
+
+#brushAttributes #stampMenu button 
+{
+    width: 75px;
+    height: 50px;
+    margin-left: 40%
+}
+/* #stampMenu */

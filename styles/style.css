@@ -12,8 +12,22 @@ body
     background-color: #8cff8a;
 }
 
+#mainMenu
+{
+    display: flex;
+    width: 100%;
+    overflow-x: scroll;
+}
 
-
+.divider
+{
+    height: inherit;
+    width: 4px;
+    margin: 4px;
+    background: #444444;
+    flex-shrink: 0;
+    flex-grow: 0;
+}
 
 
 
