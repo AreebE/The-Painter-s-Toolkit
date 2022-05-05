@@ -1,6 +1,7 @@
 # The Painter's Toolkit
 
 A web application for creating your own drawing, then saving it.
+<img src="images/Main screen.png"></img>
 
 # Features:
 ____
@@ -17,6 +18,7 @@ ____
 
 Canvas Settings:
 --
+<img src="images/Canvas attributes.png"></img>
 
 The width and height are those of the canvas. It will only accept numbers that are above 50. The canvas will only be resized once the width is clicked. Be aware that at larger sizes, the program will slow down and not draw the lines as you may wish.
 The stroke adjusts how thick the pen, blender, and eraser brushes will be. It must be at least 1. The change is only recorded once the button is pressed.
@@ -25,7 +27,7 @@ ___
 
 Brushes:
 --
-<img src="images/brushMenu"></img>
+<img src="images/Brush attributes.png"></img>
 
 There are four different brushes available:
 - **Pen --** Simply draw a line with the color your brush is set to.
@@ -42,6 +44,9 @@ ____
 
 Palette:
 --
+
+<img src="images/Color settings.png"></img>
+
 This allows you to adjust the colors of both your brush and your palette.
 
 The palette acts as a convienience option. When a colored button on the palette is pressed, it sets your current brush color to the color on the button. It also changes the color displayed in the slider menu so you can see its hexcode.
@@ -58,6 +63,9 @@ ____
 
 Layers:
 --
+
+<img src="images/Layer Settings.png"></img>
+
 * You select a layer by inserting the number of the layer. Keep in mind that the first layer is '0'. Also, if the program cannot find this layer, then the currently selected layer remains chosen.
   * When a layer is selected, it also replaces the current canvas with the data it had.
 * You can either add or remove a layer before the one you have selected. This will add a button to the layer menu and set your selected layer to the newly created one.
@@ -76,6 +84,7 @@ ____
 
 Saving:
 --
+<img src="images/Downloading Image.png"></img>
 
 Just two items: A link and a textbox. 
 * Filling the textbox will let the program know the name of the file you want to save it as.
