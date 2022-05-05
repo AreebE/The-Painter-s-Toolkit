@@ -1,21 +1,43 @@
+/**
+* This file is the main script. It is mainly meant to handle events performed by the user.
+*/
+
+/**
+* A listener for the canvas
+*/
 class Listener
 {
+    /*
+    * A constructor that does nothing.
+    */
     constructor()
     {
         
     }
 
+    /** 
+    * Notifies that the canvas has changed.
+    */
     changedCanvas()
     {
         drawCompleteDrawing();
     }
 }
 
+/**
+* Listener for the Palette.
+*/
 class PaletteListener
 {
+    /**
+    * A constructor that does nothing.
+    */
     constructor()
     {}
 
+    /**
+    * Triggers when the color needs to be changed to the hexcode. Then changes the color of this canvas.
+    */
     passHexcode(newHexcode)
     {
         document.getElementById("hashcode").value = newHexcode;
@@ -24,12 +46,8 @@ class PaletteListener
 }
 
 var text = document.getElementById("display");
-
-console.log("finished loaded");
-// document.getElementsByClassName
 var canvasContainers = document.getElementsByClassName("canvasContainer");
 var activeLayer = document.getElementById("activeLayer");
-console.log(activeLayer);
 // 
 var context = activeLayer.getContext("2d");
 context.canvas.innerWidth = activeLayer.getBoundingClientRect().width;
@@ -108,6 +126,17 @@ var brushMenu = document.getElementById("brushMenu");
 selectBrush(PEN);
 var stampImage = document.getElementById("stampImage");
 
+/**
+ * Changes based on style:
+ * * If PEN, then draw a line from the previous point to the new one. Do so in the brush's current color. Also draw a circle at the position of the mouse event.
+ * * If ERASER, do what pen does, except draw a transparent line.
+ * * If STAMP, do nothing.
+ * * If BLENDER, then draw a line from the previous point to the new one. Do not draw a circle at the mouse event.
+ * At the end, update the data in the canvas.
+ * 
+ * @param event the mouse event
+ * @param touch if this is a touch event.
+*/
 function drawLine(event, touch)
 {
       let x = event.offsetX;       
@@ -199,11 +228,20 @@ function drawLine(event, touch)
     context.fillStyle = oldFillStyle;
 }
 
+/**
+ * Simply put the drawing from the CompleteCanvas object into a canvas.
+*/
 function drawCompleteDrawing()
 {
     completeDrawingCanvas.getContext("2d").putImageData(drawing.getCompleteDrawing(), 0, 0);
 }
 
+/**
+* Set the mouse state from active to inactive. If the mode is Stamp, then print the image onto the canvas. The complete canvas is also changed and updated.
+* @param    event    the mouse event
+* @param    newState    the new state to change this to.
+* @param    touch    if this is a touch event.
+*/
 function setMouseState(event, newState, touch)
 {
     // console.log("thesiujiowrfikrp" + newState);
@@ -223,6 +261,9 @@ function setMouseState(event, newState, touch)
     // console.log(prev)
 }
 
+/**
+* Resize the canvas and the drawing.
+*/
 function resizeCanvas()
 {
     let height = document.getElementById("height").value; 
@@ -253,6 +294,9 @@ function resizeCanvas()
     return false;
 }
 
+/**
+* Adjust the thickness of the lines for PEN, ERASER, and BLENDER
+*/
 function adjustLineStroke()
 {
     this.lineStroke = document.getElementById("stroke").value;
@@ -261,6 +305,9 @@ function adjustLineStroke()
     return false;
 }
 
+/**
+* Change the background colors of the slider
+*/
 function changeSliderColor()
 {
     // console.log("called");
@@ -288,6 +335,9 @@ function changeSliderColor()
 
 }
 
+/**
+* Add a color to the palette.
+*/
 function addToPalette()
 {
     let code = document.getElementById("hashcode").value;
@@ -297,6 +347,10 @@ function addToPalette()
         palette.addColor(code);
     }
 }
+
+/**
+* Change the current color of the brush, provided the hashcode is valid. Also changes the color of the sliders.
+*/
 function changeColor()
 {
     let red       = document.getElementById("red");
@@ -328,6 +382,10 @@ function changeColor()
     }
 }
 
+/**
+* A utility method for converting some values to a hashcode.
+* @return the hashcode.
+*/
 function convertToHexcode(values)
 {
     let code = "#";
@@ -347,6 +405,10 @@ function convertToHexcode(values)
     return code;
 }
 
+/**
+* Convert a part of a hexcode (like 'FF') to an integer value
+* @return the integer value of the hexcode.
+*/
 function convertToVal(hexcode)
 {
     const bit16 = valMap.get(hexcode.substring(0, 1));
@@ -355,11 +417,17 @@ function convertToVal(hexcode)
     return bit16 * 16 + bit1;
 }
 
+/**
+* Get the file name the user has put so far.
+*/
 function getFileName()
 {
     return document.getElementById("fileName").value;        
 }
 
+/*
+* Download the image, based on the link.
+*/
 function downloadImg(aElement)
 {
     aElement.href = completeDrawingCanvas.toDataURL("image/png");
@@ -369,7 +437,9 @@ function downloadImg(aElement)
 }
 
 /**
-* Does it refer to this?
+* Add another layer to the drawing.
+*
+* @param isBefore if it should be added before the selected layer.
 */
 function addAnotherLayer(isBefore)
 {
@@ -386,6 +456,9 @@ function addAnotherLayer(isBefore)
     changeColor();
 }
 
+/**
+* Change the current layer, provided the layer is valid.
+*/
 function changeLayer()
 {
     console.log("here, " + drawing.getNumLayers());
@@ -404,6 +477,9 @@ function changeLayer()
     
 }
 
+/**
+* Delete the layer at the selected position. If the number of layers is just 1, then clear that layer.
+*/
 function deleteALayer()
 {
     if (drawing.getNumLayers() == 1)
@@ -422,6 +498,10 @@ function deleteALayer()
     document.getElementById("currentLayerSelected").value = drawing.getCurrentIndex();  
 }
 
+/**
+* Select a brush. Update the buttons to reflect this. 
+* @param chosenBrush the brush ID to choose. For stamp though, it requires that the image be fully loaded.
+*/
 function selectBrush(chosenBrush)
 {
     if (chosenBrush == STAMP
@@ -437,13 +517,17 @@ function selectBrush(chosenBrush)
     console.log(brushMenu.children[selectedBrush].className);
 }
 
+/**
+* Set the stamp image. If the image is invalid, the just set the brush to a pen.
+* @return if the stamp brush can be used.
+*/
 function setStampImage()
 {
     let stampSource = document.getElementById("stampImageForm").files[0];
     if (stampSource == null)
     {
         selectBrush(PEN);
-        console.log("eee");
+        // console.log("eee");
         stampImage.src = null;
         return false;   
     }

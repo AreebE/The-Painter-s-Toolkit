@@ -1,3 +1,6 @@
+/**
+* A class for showing the complete drawing
+*/
 class CompleteCanvas
 {
     IS_DISABLED_INDEX = 0;
@@ -7,7 +10,15 @@ class CompleteCanvas
     DISABLED_CLASS = "invisible";
     ENABLED_CLASS = "visible";
     SELECTED_CLASS = "selected";
-    
+    /**
+    * A basic constructor for creating this object
+    * 
+    * @param    firstCanvasData    the first image data object to use.
+    * @param    width    the initial width of the canvas
+    * @param    height    the initial height of the canvas.
+    * @param    menu     the menu to display all the layers in.
+    * @param    listener    the main script to notify it of major changes, like deleting or selecting a layer.
+    */
     constructor(firstCanvasData, width, height, menu, listener)
     {
         console.log(listener);
@@ -23,56 +34,58 @@ class CompleteCanvas
         // console.log(this.layers.at(0)[1]);     
     }
 
+    /**
+    * Get the length of the canvas. 
+    *
+    * @return the length of this drawing in pixels.
+    */
     getLength()
     {
         return this.layers.length;
     }
 
+    /**
+    * Get the index of what layer is selected now.
+    *
+    * @return the index of the selected layer
+    */
     getCurrentIndex()
     {
         return this.currentIndex;
     }
 
+    /**
+    * Update the data of this layer. It also updates the image of the button.
+    *
+    * @param newData the new data to add.
+    */
     updateData(newData)
     {
-        // console.log(this.currentIndex);
         this.layers.at(this.currentIndex)[this.DATA_INDEX] = newData;
-        console.log(this.currentIndex);
         let layerView = this.menu.children[this.currentIndex].children[0];
-        // console.log(layerView);
-        // console.log(this.curren)
         let sampleCanvas = document.createElement("canvas");
         sampleCanvas.getContext("2d").putImageData(newData, 0, 0);
-        layerView.src = sampleCanvas.toDataURL("image/png");
-        // console.log(layerView.src);
-        
+        layerView.src = sampleCanvas.toDataURL("image/png");        
     }
-    
+
+    /**
+    * Get what the complete drawing (all of the visible layers combined) would look like.
+    *
+    * @return an image data object containing all of the layers.
+    */
     getCompleteDrawing()
     {
-          // console.log(this.layers.length); 
         let image = new ImageData(this.width, this.height);
-        // console.log(image.height + ", " + image.width);
         for (let i = 0; i < image.data.length; i+= 4)
         {
             for (let j = 0; j < this.layers.length; j++)
             {
-                
-                
                 let layerInfo = this.layers.at(j);
-                // console.log(layerInfo[this.IS_DISABLED_INDEX] + " at " + j );
-                                                // console.log(layerInfo);
-                // if (i == image.data.length - 4)
-                // {
-                    // console.log(layerInfo[this.IS_DISABLED_INDEX] + " at " + j );
-                // }
-                // console.log(layerInfo)
                 let layerImg = layerInfo[this.DATA_INDEX];
         
                 if (layerImg.data[i + 3] != 0
                    && !layerInfo[this.IS_DISABLED_INDEX])
                 {
-                    // console.log(layerImg.data[i]);
                     image.data[i] = layerImg.data[i];
                     image.data[i + 1] = layerImg.data[i + 1];
                     image.data[i + 2] = layerImg.data[i + 2];
@@ -84,34 +97,32 @@ class CompleteCanvas
     }
 
     /**
-Adding a layer?
-*/
+    * Add a layer to the canvas at the given position. All layers that come after this one will have their position adjusted by 1.
+    * Also add a button that switches the layer from invisible to visible when clicked.
+    * Lastly, select the added layer as the current one. 
+    *
+    * @param position the position this layer will be added at.
+    * @param canvasData
+    */
     addLayer(position, canvasData, addingBeforeLayer)
     {
         let layerInfo = [false, canvasData];
-        // console.log(position + " eeee");
-        // console.log(layerInfo);
         this.layers.splice(position, 0, layerInfo);
-                // console.log(this.layers.at(0)[1].data);
 
         let newButton = document.createElement("button");
         let image = document.createElement("img");
         image.className = "layerDisplay";
-        // let menuItem = document.createElement("menuitem");
         let sampleCanvas = document.createElement("canvas");
-        // console.log("test data type: " + canvasData);
         sampleCanvas.getContext("2d").putImageData(canvasData, 0, 0);
         image.src = sampleCanvas.toDataURL("image/png");
-        // menuItem.style.width = "100px";
-        // menuItem.style.height = "100px";
         const canvas = this;
         newButton.appendChild(image);
         const oldClassName = this.BASIC_BUTTON_CLASS + " ";
         newButton.className = oldClassName + "visible";
         console.log(newButton.className);
+        
         newButton.addEventListener("click", function changeLayerSettings()
                                    {
-                                       // console.log(layerNumber);
                                         const layerNumber = canvas.findButton(newButton);                                        
                                         canvas.layers.at(layerNumber)[canvas.IS_DISABLED_INDEX] = 
                                                 !canvas.layers.at(layerNumber)[canvas.IS_DISABLED_INDEX];
@@ -137,6 +148,11 @@ Adding a layer?
         // console.log(position + " \n" + this.layers.at(0));
      }
 
+    /**
+    * A method to search for a button's position in the menu, which corresponds to the layer at that position.
+    *
+    * @return the index of the button (and the layer it represents).
+    */
     findButton(buttonToCheck)
     {
         for (let i = 0; i < this.menu.children.length; i++)
@@ -149,6 +165,11 @@ Adding a layer?
         return 0;        
     }
 
+    /**
+    * Resize the canvas, deleting any pixels that go beyond the new size.
+    * @param    newWidth    the new width of this drawing.
+    * @param    newHeight    the new height of this drawing.
+    */
     resize(newWidth, newHeight)
     {
         for (let i = 0; i < this.layers.length; i++)
@@ -183,15 +204,25 @@ Adding a layer?
         this.height = newHeight;
     }
 
+    /**
+    * Select a layer
+    * 
+    * @param    selectedLayer    the position of the layer
+    */
     selectLayer(selectedLayer)
     {
         // console.log(" aaaa");
         this.selectLayerAdvanced(selectedLayer, false);
     }
 
+    /**
+    * Select a layer while deselecting the previous layer.
+    * @param    selectedLayer    the positon of the new layer.
+    * @param    isBeforeLayer     if the layer after the current layer one needs to be deselected. This would occur when adding a layer.
+    */
     selectLayerAdvanced(selectedLayer, isBeforeLayer)
     {
-        console.log(isBeforeLayer + ", " + selectedLayer);
+        // console.log(isBeforeLayer + ", " + selectedLayer);
         if (this.currentIndex != -1)
         {
             try 
@@ -214,16 +245,28 @@ Adding a layer?
         this.menu.children[this.currentIndex].className = this.BASIC_BUTTON_CLASS + " " + visibilityClass + " " + this.SELECTED_CLASS;
     }
 
+    /**
+    * Get the image data at the selected layer.
+    * @return an ImageData object.
+    */
     getCurrentData()
     {
         return this.layers.at(this.currentIndex)[this.DATA_INDEX];
     }
-    
+
+    /**
+    * Get the total amount of layers in this drawing.
+    * @return number of layers.
+    */
     getNumLayers()
     {
         return this.layers.length;
     }
 
+    /**
+    * Delete the layer at the given position, and select the one that would replace that one, if possible. If not, then select the one before.
+    * @param layerSelected the layer to select.
+    */
     deleteLayer(layerSelected)
     {
         this.layers.splice(layerSelected, 1);
@@ -235,6 +278,10 @@ Adding a layer?
         this.listener.changedCanvas();
     }
 
+    /**
+    * Clear the layer at this position
+    * @param layerSelected the layer to clear.
+    */
     clearLayer(layerSelected)
     {
         this.layers.at(layerSelected)[this.DATA_INDEX] = new ImageData(this.width, this.height);
