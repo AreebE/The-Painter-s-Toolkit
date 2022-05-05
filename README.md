@@ -8,6 +8,7 @@ ____
 
 Canvas:
 -- 
+<img src="images/Canvas View.png"></img>
 
 There are two canvas side by side of each other.
 
